@@ -8,8 +8,14 @@ import javax.persistence.Entity;
 @Entity
 public class ReefAquarium extends Aquarium {
 
-    private enum TypeOfMaintenance {BERLINOIS, JAUBERT, AUTRE}
-    private enum MainPopulation {FISH_ONLY, SOFT, LPS, SPS, MIX }
+    private TypeOfMaintenance typeOfMaintenance;
+    private MainPopulation mainPopulation;
     private String ballingDescription;
+    private int liveRocksWeigth;
+    private int othersRocksWeight;
+
+    public enum TypeOfMaintenance {BERLINOIS, JAUBERT, AUTRE}
+    public enum MainPopulation {FISH_ONLY, SOFT, LPS, SPS, MIX }
+
 
 }

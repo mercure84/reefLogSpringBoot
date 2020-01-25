@@ -33,13 +33,9 @@ public class AquariumController {
         newReefAquarium.setHeight(reefAquariumForm.getHeight());
         newReefAquarium.setWidth(reefAquariumForm.getWidth());
         newReefAquarium.setSumpVolume(reefAquariumForm.getSumpVolume());
+        newReefAquarium.setMainPopulation(reefAquariumForm.getMainPopulation());
+        newReefAquarium.setTypeOfMaintenance(reefAquariumForm.getTypeOfMaintenance());
         aquariumRepository.save(newReefAquarium);
         return newReefAquarium;
-
     }
-
-
-
-
-
 }
