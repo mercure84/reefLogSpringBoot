@@ -1,6 +1,9 @@
 language: java
 jdk:
   - oraclejdk11
-sudo: required
+sudo: true
+
+before_install:
+      - chmod +x mvnw
 script:
-  - mvn package
+      - mvn package
