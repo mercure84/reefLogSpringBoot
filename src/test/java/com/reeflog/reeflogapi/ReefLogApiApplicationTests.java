@@ -1,4 +1,4 @@
-package com.reeflog.reefLogApi;
+package com.reeflog.reeflogapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

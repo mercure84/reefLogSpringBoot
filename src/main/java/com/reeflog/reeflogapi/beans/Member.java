@@ -1,4 +1,4 @@
-package com.reeflog.reefLogApi.beans;
+package com.reeflog.reeflogapi.beans;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Entity
-public class Membre {
+public class Member {
 
     @Id
     @GeneratedValue

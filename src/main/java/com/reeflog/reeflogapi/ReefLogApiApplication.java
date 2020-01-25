@@ -1,4 +1,4 @@
-package com.reeflog.reefLogApi;
+package com.reeflog.reeflogapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
