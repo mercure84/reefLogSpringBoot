@@ -1,16 +1,14 @@
 package com.reeflog.reeflogapi.restcontroller;
 
 
+import com.reeflog.reeflogapi.beans.Aquarium;
 import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.beans.ReefAquarium;
 import com.reeflog.reeflogapi.beans.helpers.ReefAquariumForm;
 import com.reeflog.reeflogapi.repository.AquariumRepository;
 import com.reeflog.reeflogapi.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AquariumController {
@@ -38,4 +36,12 @@ public class AquariumController {
         aquariumRepository.save(newReefAquarium);
         return newReefAquarium;
     }
+
+    @GetMapping(value="/api/deleteAquarium/{id}")
+    public String deleteAquarium(@RequestHeader("Authorization") String token, @PathVariable int id){
+        Aquarium aquariumToDelete = aquariumRepository.findById(id);
+        aquariumRepository.delete(aquariumToDelete);
+        return "L'aquarium " + aquariumToDelete.getId() + " a bien été supprimé de la base";
+    }
+
 }

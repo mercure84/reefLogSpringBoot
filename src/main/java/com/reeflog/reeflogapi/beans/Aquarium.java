@@ -18,13 +18,15 @@ public abstract class Aquarium {
     private float length;
     private float width;
     private float height;
+
     private Date startDate;
 
     @OneToMany
     private List<Equipment> equipmentList;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Member member;
+
     private int sumpVolume;
 
     public float getRawVolume() {
