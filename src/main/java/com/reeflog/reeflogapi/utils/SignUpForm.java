@@ -7,9 +7,6 @@ public class SignUpForm {
     private String lastName;
     private String firstName;
     private String nickName;
-
-
-
     private String email;
     private String password;
     private String repassword;
@@ -62,6 +59,7 @@ public class SignUpForm {
     public void setRepassword(String repassword) {
         this.repassword = repassword;
     }
+
     public String getNickName() {
         return nickName;
     }

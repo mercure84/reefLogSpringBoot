@@ -16,7 +16,7 @@ public class Member {
     private String nickname;
     private String email;
     private String password;
-    private Date signupDate;
+    private Date signupDate = new Date();
     private String role = "USER";
 
     public int getId() {
