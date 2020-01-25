@@ -3,7 +3,7 @@ package com.reeflog.reeflogapi.restcontroller;
 import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.repository.MemberRepository;
 import com.reeflog.reeflogapi.utils.EncryptedPasswordUtils;
-import com.reeflog.reeflogapi.utils.SignUpForm;
+import com.reeflog.reeflogapi.beans.helpers.SignUpForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
