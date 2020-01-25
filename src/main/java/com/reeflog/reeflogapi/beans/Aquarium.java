@@ -3,6 +3,7 @@ package com.reeflog.reeflogapi.beans;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -17,6 +18,7 @@ public abstract class Aquarium {
     private float length;
     private float width;
     private float height;
+    private Date startDate;
 
     @OneToMany
     private List<Equipment> equipmentList;

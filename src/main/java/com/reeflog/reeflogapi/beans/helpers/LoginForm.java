@@ -1,4 +1,4 @@
-package com.reeflog.reeflogapi.utils;
+package com.reeflog.reeflogapi.beans.helpers;
 
 // util bean pour mapper le formulaire Login pour member
 
