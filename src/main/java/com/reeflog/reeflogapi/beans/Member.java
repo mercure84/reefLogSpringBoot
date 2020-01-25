@@ -13,11 +13,11 @@ public class Member {
     private int id;
     private String lastName;
     private String firstName;
-    private String login;
+    private String nickname;
     private String email;
     private String password;
-    private Date signupDate;
-    private String role = "MEMBER";
+    private Date signupDate = new Date();
+    private String role = "USER";
 
     public int getId() {
         return id;
@@ -43,13 +43,6 @@ public class Member {
         this.firstName = firstName;
     }
 
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
 
     public String getEmail() {
         return email;
@@ -81,5 +74,13 @@ public class Member {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 }
