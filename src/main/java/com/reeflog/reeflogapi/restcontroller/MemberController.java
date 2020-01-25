@@ -35,7 +35,7 @@ public class MemberController {
 
 
     @GetMapping(value = "/api/deleteMember/{id}")
-    public Member deleteMember(@PathVariable int id) {
+    public Member deleteMember(@RequestHeader("Authorization") String token, @PathVariable int id) {
         Member memberToDelete = memberRepository.findById(id);
         memberRepository.delete(memberToDelete);
         return memberToDelete;
