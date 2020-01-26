@@ -1,5 +1,6 @@
 package com.reeflog.reeflogapi.security;
 
+import com.reeflog.reeflogapi.beans.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -60,4 +61,14 @@ public class JwtTokenUtil implements Serializable {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
+    // même méthode que précédemment mais perment de passer directement un membre et non un userDetails
+
+    public Boolean validateCustomTokenForMember(String token, Member member){
+        token = token.substring(7);
+        final String username = getUsernameFromToken(token);
+        return (username.equals(member.getEmail()) && !isTokenExpired(token));
+
+    }
+
 }

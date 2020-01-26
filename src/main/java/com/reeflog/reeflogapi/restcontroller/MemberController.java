@@ -2,6 +2,7 @@ package com.reeflog.reeflogapi.restcontroller;
 
 import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.repository.MemberRepository;
+import com.reeflog.reeflogapi.security.JwtTokenUtil;
 import com.reeflog.reeflogapi.utils.EncryptedPasswordUtils;
 import com.reeflog.reeflogapi.beans.helpers.SignUpForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,9 @@ public class MemberController {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping(value = "/api/addNewMember")
     public Member addNewMember(@RequestBody SignUpForm signUpForm) throws RuntimeException {
@@ -37,6 +41,8 @@ public class MemberController {
     @GetMapping(value = "/api/deleteMember/{id}")
     public Member deleteMember(@RequestHeader("Authorization") String token, @PathVariable int id) {
         Member memberToDelete = memberRepository.findById(id);
+        boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, memberToDelete );
+        System.out.println("le token a été validé (true) ou pas validé (false)  : " + isTokenValide );
         memberRepository.delete(memberToDelete);
         return memberToDelete;
     }
