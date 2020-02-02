@@ -4,6 +4,7 @@ import com.reeflog.reeflogapi.ReefLogApiApplication;
 import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.repository.MemberRepository;
 import com.reeflog.reeflogapi.security.JwtTokenUtil;
+import com.reeflog.reeflogapi.utils.BeanValidator;
 import com.reeflog.reeflogapi.utils.EncryptedPasswordUtils;
 import com.reeflog.reeflogapi.beans.helpers.SignUpForm;
 import org.slf4j.Logger;
@@ -16,6 +17,8 @@ public class MemberController {
 
     private static final Logger logger = LoggerFactory.getLogger((ReefLogApiApplication.class));
 
+    @Autowired
+    BeanValidator beanValidator;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -25,6 +28,12 @@ public class MemberController {
 
     @PostMapping(value = "/api/addNewMember")
     public Member addNewMember(@RequestBody SignUpForm signUpForm) throws RuntimeException {
+
+        if (!beanValidator.isSignupFormValide(signUpForm)){
+            throw new RuntimeException("Le formulaire SignupForm n'est pas valide ! " + signUpForm);
+        }
+
+
         if (!signUpForm.getPassword().equals(signUpForm.getRepassword()))
             throw new RuntimeException(("You must confirm your password"));
         Member memberByEmail = memberRepository.findByEmail(signUpForm.getEmail());
@@ -34,8 +43,6 @@ public class MemberController {
         if (memberByEmail != null || memberByUsername != null) {
             throw new RuntimeException("Utilisateur déjà enregistré ! changer d'email ou de username");
         } else {
-            newMember.setFirstName(signUpForm.getFirstName());
-            newMember.setLastName(signUpForm.getLastName());
             newMember.setUserName(signUpForm.getUserName());
             newMember.setEmail(signUpForm.getEmail());
             String encodedPassword = EncryptedPasswordUtils.encryptePassword(signUpForm.getPassword());
