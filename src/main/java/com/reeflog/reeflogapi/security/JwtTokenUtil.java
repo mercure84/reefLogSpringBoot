@@ -1,9 +1,12 @@
 package com.reeflog.reeflogapi.security;
 
+import com.reeflog.reeflogapi.ReefLogApiApplication;
 import com.reeflog.reeflogapi.beans.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -16,6 +19,10 @@ import java.util.function.Function;
 
 @Component
 public class JwtTokenUtil implements Serializable {
+
+    private static final Logger logger = LoggerFactory.getLogger((ReefLogApiApplication.class));
+
+
     private static final long serialVersionUID = -2550185165626007488L;
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
     @Value("${jwt.secret}")
@@ -59,7 +66,9 @@ public class JwtTokenUtil implements Serializable {
     //validate token
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        boolean isTokenOK = username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        logger.info(userDetails + " présente un token dont la correspondance est =  " + isTokenOK);
+        return (isTokenOK);
     }
 
     // même méthode que précédemment mais perment de passer directement un membre et non un userDetails
