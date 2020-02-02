@@ -11,7 +11,7 @@ import lombok.Data;
 public class SignUpForm {
 
 
-    @Size(max=15)
+    @Size(min=3, max=15)
     private String userName;
 
     @Email

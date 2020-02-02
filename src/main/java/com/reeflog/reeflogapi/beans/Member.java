@@ -21,5 +21,8 @@ public class Member {
     private String password;
     private Date signupDate = new Date();
     private String role = "USER";
+    private MemberStatus memberStatus;
+
+    public enum MemberStatus {VALIDATION_EMAIL, BANNED, EMAIL_CONFIRMED }
 
 }
