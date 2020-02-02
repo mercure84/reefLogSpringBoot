@@ -27,10 +27,12 @@ public class MemberController {
     public Member addNewMember(@RequestBody SignUpForm signUpForm) throws RuntimeException {
         if (!signUpForm.getPassword().equals(signUpForm.getRepassword()))
             throw new RuntimeException(("You must confirm your password"));
-        Member member = memberRepository.findByEmail(signUpForm.getEmail());
+        Member memberByEmail = memberRepository.findByEmail(signUpForm.getEmail());
+        Member memberByUsername = memberRepository.findByUserName(signUpForm.getUserName());
         Member newMember = new Member();
-        if (member != null) {
-            throw new RuntimeException("Utilisateur déjà enregistré !");
+
+        if (memberByEmail != null || memberByUsername != null) {
+            throw new RuntimeException("Utilisateur déjà enregistré ! changer d'email ou de username");
         } else {
             newMember.setFirstName(signUpForm.getFirstName());
             newMember.setLastName(signUpForm.getLastName());
