@@ -18,6 +18,8 @@
 		<java.version>11</java.version>
 	</properties>
 
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -88,9 +90,25 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<goals>
+					<goal>build-info</goal>
+				</goals>
 			</plugin>
 		</plugins>
+
+		<resources>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>application.properties</include>
+				</includes>
+			</resource>
+		</resources>
+
 	</build>
+
+
 
 	<repositories>
 		<repository>
