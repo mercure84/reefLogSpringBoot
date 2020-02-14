@@ -7,8 +7,4 @@ import lombok.Data;
 @Data
 public class FreshWaterAquarium extends Aquarium {
 
-
-
-
-
 }

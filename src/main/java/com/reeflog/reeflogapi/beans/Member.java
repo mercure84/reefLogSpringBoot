@@ -16,10 +16,13 @@ public class Member {
     private int id;
     private String lastName;
     private String firstName;
-    private String nickname;
+    private String userName;
     private String email;
     private String password;
     private Date signupDate = new Date();
     private String role = "USER";
+    private MemberStatus memberStatus;
+
+    public enum MemberStatus {VALIDATION_EMAIL, BANNED, EMAIL_CONFIRMED }
 
 }
