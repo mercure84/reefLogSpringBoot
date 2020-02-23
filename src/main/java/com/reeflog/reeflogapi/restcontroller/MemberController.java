@@ -71,4 +71,21 @@ public class MemberController {
         return memberToDelete;
 
 
-    }}
+    }
+
+    @GetMapping(value="/api/getMemberDetail/{email}")
+    public Member getMemberDetail(@RequestHeader("Authorization") String token, @PathVariable String email){
+        Member member = memberRepository.findByEmail(email);
+        boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+        if (isTokenValide) {
+            logger.info("Envoi du détail du membre : " + member);
+            return member;
+        }
+
+        else {
+            return null;
+        }
+
+
+    }
+}

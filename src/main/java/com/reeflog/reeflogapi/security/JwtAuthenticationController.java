@@ -1,5 +1,6 @@
 package com.reeflog.reeflogapi.security;
 
+import com.reeflog.reeflogapi.beans.helpers.TokenJWTHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,26 @@ public class JwtAuthenticationController {
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
         return ResponseEntity.ok(new JwtResponse(token));
+    }
+
+
+    // service utilitaire à destination de l'API : permet d'avoir un retour sur la validité du token
+    @RequestMapping(value = "/api/checkToken", method = RequestMethod.POST)
+    public TokenJWTHelper checkToken(@RequestBody TokenJWTHelper tokenJWTHelper) {
+        boolean isTokenValide = false;
+        String email = tokenJWTHelper.getEmail();
+        String token = tokenJWTHelper.getToken().substring(7);
+        try {
+            String emailFromToken = jwtTokenUtil.getUsernameFromToken(token);
+            isTokenValide = !jwtTokenUtil.isTokenExpired(token) && emailFromToken.equals(email);
+        } catch (Exception e) {
+            System.out.println("erreur = " + e);
+            isTokenValide = false;
+        }
+        tokenJWTHelper.setCredentialValide(isTokenValide);
+        logger.info("Présentation d'un comboToken pour validation" + tokenJWTHelper);
+        return tokenJWTHelper;
+
     }
 
     private void authenticate(String username, String password) throws Exception {

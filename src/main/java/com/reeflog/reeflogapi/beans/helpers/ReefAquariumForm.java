@@ -1,5 +1,6 @@
 package com.reeflog.reeflogapi.beans.helpers;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.reeflog.reeflogapi.beans.ReefAquarium;
 import lombok.Data;
 
@@ -16,7 +17,10 @@ public class ReefAquariumForm {
     private float width;
     private float height;
     private int sumpVolume;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-YYYY")
     private Date startDate;
+
     private int liveRocksWeigth;
     private int othersRocksWeight;
 

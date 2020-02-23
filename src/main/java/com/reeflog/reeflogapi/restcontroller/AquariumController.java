@@ -1,17 +1,23 @@
 package com.reeflog.reeflogapi.restcontroller;
 
 
+import com.reeflog.reeflogapi.ReefLogApiApplication;
 import com.reeflog.reeflogapi.beans.Aquarium;
 import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.beans.ReefAquarium;
 import com.reeflog.reeflogapi.beans.helpers.ReefAquariumForm;
 import com.reeflog.reeflogapi.repository.AquariumRepository;
 import com.reeflog.reeflogapi.repository.MemberRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AquariumController {
+
+    private static final Logger logger = LoggerFactory.getLogger((ReefLogApiApplication.class));
+
 
     @Autowired
     AquariumRepository aquariumRepository;
@@ -34,6 +40,7 @@ public class AquariumController {
         newReefAquarium.setMainPopulation(reefAquariumForm.getMainPopulation());
         newReefAquarium.setTypeOfMaintenance(reefAquariumForm.getTypeOfMaintenance());
         aquariumRepository.save(newReefAquarium);
+        logger.info("Un nouvel aquarium a été enregistré " + newReefAquarium );
         return newReefAquarium;
     }
 
