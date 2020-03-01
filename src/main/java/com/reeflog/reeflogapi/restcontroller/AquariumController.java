@@ -57,8 +57,8 @@ public class AquariumController {
         return "L'aquarium " + aquariumToDelete.getId() + " a bien été supprimé de la base";
     }
 
-    @GetMapping(value = "/api/getListAquarium/{memberId}")
-    public List<Aquarium> getDetailAquarium(@RequestHeader("Authorization") String token, @PathVariable int memberId) {
+    @GetMapping(value = "/api/getAquariumList/{memberId}")
+    public List<Aquarium> getAquariumList(@RequestHeader("Authorization") String token, @PathVariable int memberId) {
         List<Aquarium> listAquariums = new ArrayList<>();
         try {
             Member member = memberRepository.findById(memberId);
