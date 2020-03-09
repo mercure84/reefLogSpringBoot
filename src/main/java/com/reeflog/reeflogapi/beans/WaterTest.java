@@ -12,14 +12,19 @@ public class WaterTest {
     @GeneratedValue
     private int id;
     private Date date;
-    private TypeTest type;
-    private float value;
-    private String unit;
+    private float temperature;
+    private float salinity;
+    private float alcalinity;
+    private float ph;
+    private int calcium;
+    private int magnesium;
+    private float ammoniac;
+    private float nitrates;
+    private float nitrites;
+    private float phosphates;
+    private float silicates;
 
-    public enum TypeTest {PHOSPHATES, NITRATED, CALCIUM, KH, PH}
-
-    @ManyToOne
-    private Member member;
+    public enum TypeTest {TEMPERATURE, SALINITY, ALCALINITY, PH, CALCIUM, MAGNESIUM, AMMONIAC, NITRATES, NITRITES, PHOSPHATES, SILICATES}
 
     @ManyToOne
     private Aquarium aquarium;
