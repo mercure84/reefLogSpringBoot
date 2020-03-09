@@ -95,6 +95,35 @@ public class WaterTestController {
         }
         return null;
     }
+    
+    
+    @GetMapping(value="/api/deleteWaterTestList/{aquariumId}")
+    public List<WaterTest> deleteWaterTestList(@RequestHeader("Authorization") String token, @PathVariable int aquariumId){
+
+        try{
+            Aquarium aquarium = aquariumRepository.findById(aquariumId);
+            Member member = aquarium.getMember();
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide){
+                
+                List<WaterTest> waterTests = waterTestRepository.findByAquarium(aquarium);
+
+                for (WaterTest waterTest : waterTests) {
+                    waterTestRepository.delete(waterTest);
+                }
+                logger.info("Les " + waterTests.size() +" test(s) de l'aquarium n° " + aquariumId + "  ont été supprimés de la BDD");
+                return waterTests;
+
+            }
+        }catch(Exception e) {
+
+            return null;
+        }
+        return null;
+        
+        
+        
+    }
 
 
 
