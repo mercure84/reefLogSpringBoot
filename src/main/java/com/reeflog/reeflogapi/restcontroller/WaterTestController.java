@@ -47,6 +47,7 @@ public class WaterTestController {
                 waterTest.setDate(new Date());
                 waterTest.setAquarium(aquarium);
                 waterTestRepository.save(waterTest);
+                logger.info("Un nouveau test d'eau a été ajouté pour l'aquarium n° " + aquarium.getId());
                 return waterTest;
 
             }
@@ -63,6 +64,7 @@ public class WaterTestController {
             Member member = aquarium.getMember();
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
+                logger.info("Envoi de la liste des tests d'eau pour l'aquarium n° " + aquariumId);
                 return waterTestRepository.findByAquarium(aquarium);
             }
 
@@ -72,6 +74,28 @@ public class WaterTestController {
         }
         return null;
     }
+
+
+    @GetMapping(value="/api/deleteWaterTest/{waterTestId}")
+    public WaterTest deleteWaterTest(@RequestHeader("Authorization") String token, @PathVariable int waterTestId){
+
+        try{
+            WaterTest waterTest = waterTestRepository.findById(waterTestId);
+            Member member = waterTest.getAquarium().getMember();
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+
+            if (isTokenValide){
+                waterTestRepository.delete(waterTest);
+                logger.info("Le test n° " + waterTestId + " a été supprimé de la BDD");
+                return waterTest;
+            }
+        }catch(Exception e) {
+
+            return null;
+        }
+        return null;
+    }
+
 
 
 }

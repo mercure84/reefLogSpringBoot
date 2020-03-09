@@ -9,5 +9,6 @@ import java.util.List;
 public interface WaterTestRepository extends JpaRepository<WaterTest, Integer> {
 
 List<WaterTest> findByAquarium(Aquarium aquarium);
+WaterTest findById(int id);
 
 }
