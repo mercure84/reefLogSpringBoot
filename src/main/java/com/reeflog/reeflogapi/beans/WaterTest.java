@@ -12,17 +12,17 @@ public class WaterTest {
     @GeneratedValue
     private int id;
     private Date date;
-    private float temperature;
-    private float salinity;
-    private float alcalinity;
-    private float ph;
-    private int calcium;
-    private int magnesium;
-    private float ammoniac;
-    private float nitrates;
-    private float nitrites;
-    private float phosphates;
-    private float silicates;
+    private Float temperature;
+    private Float salinity;
+    private Float alcalinity;
+    private Float ph;
+    private Integer calcium;
+    private Integer magnesium;
+    private Float ammoniac;
+    private Float nitrates;
+    private Float nitrites;
+    private Float phosphates;
+    private Float silicates;
 
     public enum TypeTest {TEMPERATURE, SALINITY, ALCALINITY, PH, CALCIUM, MAGNESIUM, AMMONIAC, NITRATES, NITRITES, PHOSPHATES, SILICATES}
 
