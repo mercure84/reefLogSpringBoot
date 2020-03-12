@@ -64,7 +64,7 @@ public class WaterTestController {
             Member member = aquarium.getMember();
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
-                List<WaterTest> waterTestList = waterTestRepository.findByAquarium(aquarium);
+                List<WaterTest> waterTestList = waterTestRepository.findByAquariumOrderByDateDesc(aquarium);
                 logger.info("Envoi de la liste des tests d'eau pour l'aquarium n° " + aquariumId);
                 return waterTestList;
             }
@@ -107,7 +107,7 @@ public class WaterTestController {
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
 
-                List<WaterTest> waterTests = waterTestRepository.findByAquarium(aquarium);
+                List<WaterTest> waterTests = waterTestRepository.findByAquariumOrderByDateDesc(aquarium);
 
                 for (WaterTest waterTest : waterTests) {
                     waterTestRepository.delete(waterTest);
