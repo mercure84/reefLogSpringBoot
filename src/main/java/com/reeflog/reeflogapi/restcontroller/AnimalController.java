@@ -5,9 +5,11 @@ import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.beans.animals.Animal;
 import com.reeflog.reeflogapi.beans.animals.corals.*;
 import com.reeflog.reeflogapi.beans.animals.fishes.Fish;
+import com.reeflog.reeflogapi.beans.animals.reefcleaners.ReefCleaner;
 import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import com.reeflog.reeflogapi.beans.helpers.CoralForm;
 import com.reeflog.reeflogapi.beans.helpers.FishForm;
+import com.reeflog.reeflogapi.beans.helpers.ReefCleanerForm;
 import com.reeflog.reeflogapi.repository.AnimalRepository;
 import com.reeflog.reeflogapi.repository.AquariumRepository;
 import com.reeflog.reeflogapi.repository.MemberRepository;
@@ -86,7 +88,6 @@ public class AnimalController {
                 } else if (coralForm.getSps()!= null){
                     coral = coralForm.getSps();
                 }
-
                 coral.setAquarium(aquarium);
                 animalRepository.save(coral);
                 logger.info("Un nouveau pensionnaire CORAL a été ajouté : " + coral);
@@ -98,6 +99,38 @@ public class AnimalController {
         }
         return null;
     }
+
+    @PostMapping(value = "/api/addReefCleaner")
+    public Animal addReefCleaner(@RequestHeader("Authorization") String token, @RequestBody ReefCleanerForm reefCleanerForm) {
+        Aquarium aquarium = aquariumRepository.findById(reefCleanerForm.getAquariumId());
+        Member member = aquarium.getMember();
+        try {
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide) {
+                ReefCleaner reefCleaner= new ReefCleaner();
+                if (reefCleanerForm.getCrustacean() != null) {
+                    reefCleaner = reefCleanerForm.getCrustacean();
+                } else if (reefCleanerForm.getCucumber() != null) {
+                    reefCleaner = reefCleanerForm.getCucumber();
+                } else if (reefCleanerForm.getMollusk() != null){
+                    reefCleaner = reefCleanerForm.getMollusk();
+                } else if (reefCleanerForm.getStar()!= null){
+                    reefCleaner = reefCleanerForm.getStar();
+                } else if (reefCleanerForm.getUrchin()!= null){
+                    reefCleaner = reefCleanerForm.getUrchin();
+                }
+                reefCleaner.setAquarium(aquarium);
+                animalRepository.save(reefCleaner);
+                logger.info("Un nouveau pensionnaire REEFCLEAN a été ajouté : " + reefCleaner);
+                return reefCleaner;
+            }
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+            return null;
+        }
+        return null;
+    }
+
 
 
 }

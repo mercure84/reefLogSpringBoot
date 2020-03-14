@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 
 @Data
 @Entity
-public abstract class ReefCleaner extends Animal {
+public class ReefCleaner extends Animal {
 
 
 }
