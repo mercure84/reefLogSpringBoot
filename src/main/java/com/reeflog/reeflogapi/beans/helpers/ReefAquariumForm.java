@@ -12,18 +12,6 @@ import java.util.Date;
 public class ReefAquariumForm {
 
     private int memberId;
-    private String name;
-    private ReefAquarium.TypeOfMaintenance typeOfMaintenance;
-    private ReefAquarium.MainPopulation mainPopulation;
-    private float length;
-    private float width;
-    private float height;
-    private int sumpVolume;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-YYYY")
-    private Date startDate;
-
-    private int liveRocksWeigth;
-    private int othersRocksWeight;
+    private ReefAquarium reefAquarium;
 
 }

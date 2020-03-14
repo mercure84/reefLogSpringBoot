@@ -35,18 +35,11 @@ public class AquariumController {
     public ReefAquarium addNewReefAquarium(@RequestHeader("Authorization") String token, @RequestBody ReefAquariumForm reefAquariumForm) {
 
         try {
-            ReefAquarium newReefAquarium = new ReefAquarium();
+            ReefAquarium newReefAquarium =  reefAquariumForm.getReefAquarium();
             Member member = memberRepository.findById(reefAquariumForm.getMemberId());
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 newReefAquarium.setMember(member);
-                newReefAquarium.setName(reefAquariumForm.getName());
-                newReefAquarium.setLength(reefAquariumForm.getLength());
-                newReefAquarium.setHeight(reefAquariumForm.getHeight());
-                newReefAquarium.setWidth(reefAquariumForm.getWidth());
-                newReefAquarium.setSumpVolume(reefAquariumForm.getSumpVolume());
-                newReefAquarium.setMainPopulation(reefAquariumForm.getMainPopulation());
-                newReefAquarium.setTypeOfMaintenance(reefAquariumForm.getTypeOfMaintenance());
                 aquariumRepository.save(newReefAquarium);
                 logger.info("Un nouvel aquarium a été enregistré " + newReefAquarium);
                 return newReefAquarium;
@@ -106,6 +99,5 @@ public class AquariumController {
         }
         return null;
     }
-
 
 }
