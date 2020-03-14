@@ -210,7 +210,7 @@ public class AnimalController {
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 animalRepository.save(animal);
-                logger.info("Le pensionnaire n° " + animal + " a été mis à jour !");
+                logger.info("Le pensionnaire  " + animal + " a été mis à jour !");
                 return animal;
             }
         } catch (Exception e) {
@@ -220,4 +220,22 @@ public class AnimalController {
         return null;
     }
 
+
+    @GetMapping(value="/api/getAnimals/{aquariumId}")
+    public List<Animal> getAnimals(@RequestHeader("Authorization") String token, @PathVariable int aquariumId){
+        try {
+            Aquarium aquarium = aquariumRepository.findById(aquariumId);
+            Member member = aquarium.getMember();
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide) {
+                List<Animal> animals = animalRepository.findAnimalsByAquarium(aquarium);
+                logger.info("Liste d'animaux envoyés pour l'aquarium n°" + aquariumId);
+                return animals;
+            }
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+            return null;
+        }
+        return null;
+    }
 }
