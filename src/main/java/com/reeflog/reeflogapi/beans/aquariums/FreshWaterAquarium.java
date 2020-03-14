@@ -1,4 +1,4 @@
-package com.reeflog.reeflogapi.beans;
+package com.reeflog.reeflogapi.beans.aquariums;
 
 
 import lombok.Data;

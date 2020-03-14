@@ -1,7 +1,7 @@
 package com.reeflog.reeflogapi.restcontroller;
 
 import com.reeflog.reeflogapi.ReefLogApiApplication;
-import com.reeflog.reeflogapi.beans.Aquarium;
+import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.beans.WaterTest;
 import com.reeflog.reeflogapi.beans.helpers.WaterTestForm;
@@ -35,8 +35,6 @@ public class WaterTestController {
     @PostMapping(value = "/api/addNewWaterTest")
     public WaterTest addNewWaterTest(@RequestHeader("Authorization") String token, @RequestBody WaterTestForm waterTestForm) {
 
-        System.out.println(token);
-        System.out.println(waterTestForm);
         try {
             Aquarium aquarium = aquariumRepository.findById(waterTestForm.getAquariumId());
             Member member = aquarium.getMember();
@@ -49,9 +47,9 @@ public class WaterTestController {
                 waterTestRepository.save(waterTest);
                 logger.info("Un nouveau test d'eau a été ajouté pour l'aquarium n° " + aquarium.getId());
                 return waterTest;
-
             }
         } catch (Exception e) {
+            logger.error(String.valueOf(e));
             return null;
         }
         return null;
@@ -70,7 +68,7 @@ public class WaterTestController {
             }
 
         } catch (Exception e) {
-
+            logger.error(String.valueOf(e));
             return null;
         }
         return null;
@@ -91,7 +89,7 @@ public class WaterTestController {
                 return waterTest;
             }
         } catch (Exception e) {
-
+            logger.error(String.valueOf(e));
             return null;
         }
         return null;
@@ -117,7 +115,7 @@ public class WaterTestController {
 
             }
         } catch (Exception e) {
-
+            logger.error(String.valueOf(e));
             return null;
         }
         return null;
@@ -125,24 +123,24 @@ public class WaterTestController {
 
     @PostMapping(value = "/api/updateWaterTest")
     public WaterTest updateWaterTest(@RequestHeader("Authorization") String token, @RequestBody WaterTestForm waterTestForm) {
-        WaterTest waterTest = waterTestForm.getWaterTest();
-        Aquarium aquarium = aquariumRepository.findById(waterTestForm.getAquariumId());
-        waterTest.setAquarium(aquarium);
+
         try {
-            Member member = waterTest.getAquarium().getMember();
+            WaterTest waterTest = waterTestForm.getWaterTest();
+            Aquarium aquarium = aquariumRepository.findById(waterTestForm.getAquariumId());
+            waterTest.setAquarium(aquarium);
+            Member member = aquarium.getMember();
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 waterTestRepository.save(waterTest);
-                logger.info("Le test n° " + waterTest.getId() + " a été mis à jour !");
+                logger.info("Le test n° " + waterTest + " a été mis à jour !");
                 return waterTest;
             }
 
         } catch (Exception e) {
-            System.out.println(e);
+            logger.error(String.valueOf(e));
             return null;
         }
         return null;
     }
-
 
 }
