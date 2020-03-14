@@ -1,5 +1,6 @@
 package com.reeflog.reeflogapi.beans;
 
+import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import lombok.Data;
 
 import javax.persistence.*;

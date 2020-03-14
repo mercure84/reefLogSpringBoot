@@ -1,7 +1,7 @@
 package com.reeflog.reeflogapi.restcontroller;
 
 import com.reeflog.reeflogapi.ReefLogApiApplication;
-import com.reeflog.reeflogapi.beans.Aquarium;
+import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.beans.WaterTest;
 import com.reeflog.reeflogapi.beans.helpers.WaterTestForm;

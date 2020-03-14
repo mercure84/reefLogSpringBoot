@@ -1,5 +1,7 @@
-package com.reeflog.reeflogapi.beans;
+package com.reeflog.reeflogapi.beans.aquariums;
 
+import com.reeflog.reeflogapi.beans.Equipment;
+import com.reeflog.reeflogapi.beans.Member;
 import lombok.Data;
 
 import javax.persistence.*;
