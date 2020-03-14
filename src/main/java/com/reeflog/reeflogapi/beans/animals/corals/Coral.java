@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 
 @Data
 @Entity
-public abstract class Coral extends Animal {
+public class Coral extends Animal {
+
+    public enum CoralType {ANEMONE, LPS, SPS, SOFT}
 
 }

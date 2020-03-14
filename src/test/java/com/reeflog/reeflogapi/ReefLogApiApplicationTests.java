@@ -1,6 +1,8 @@
 package com.reeflog.reeflogapi;
 
 import com.reeflog.reeflogapi.beans.animals.Animal;
+import com.reeflog.reeflogapi.beans.animals.corals.Anemone;
+import com.reeflog.reeflogapi.beans.animals.corals.Coral;
 import com.reeflog.reeflogapi.beans.animals.fishes.Fish;
 import com.reeflog.reeflogapi.repository.AquariumRepository;
 import com.reeflog.reeflogapi.utils.BuildInfoService;
@@ -31,6 +33,17 @@ class ReefLogApiApplicationTests {
         fish.setCurrentSize(Animal.CurrentSize.M);
         fish.setNotes("acheté au Poisson d'Or");
         System.out.println("Poisson construit = " + fish.toString() + " " + fish.getFishCategory() + " " + fish.getName() + fish.getNotes());
+
+
+
+        Coral coral = new Coral();
+        coral.setQuantity(1);
+        coral.setCurrentSize(Animal.CurrentSize.L);
+        coral.setNotes("reçu en bouture dans une bourse");
+        ((Anemone) coral).setAnemoneSpecies(Anemone.AnemoneSpecies.ENTACMEA);
+
+
+
 
 
     }
