@@ -23,7 +23,7 @@ public class AquariumController {
     private static final Logger logger = LoggerFactory.getLogger((ReefLogApiApplication.class));
 
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     AquariumRepository aquariumRepository;

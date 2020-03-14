@@ -1,12 +1,10 @@
 package com.reeflog.reeflogapi.beans.aquariums;
 
-import com.reeflog.reeflogapi.beans.Equipment;
 import com.reeflog.reeflogapi.beans.Member;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Entity
@@ -22,9 +20,6 @@ public abstract class Aquarium {
     private float height;
 
     private Date startDate;
-
-    @OneToMany
-    private List<Equipment> equipmentList;
 
     @ManyToOne
     private Member member;
