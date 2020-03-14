@@ -238,4 +238,27 @@ public class AnimalController {
         }
         return null;
     }
+
+
+    @GetMapping(value="/api/getAnimal/{animalId}")
+    public Animal getAnimal(@RequestHeader("Authorization") String token, @PathVariable int animalId){
+
+        try {
+            Animal animal = animalRepository.findById(animalId);
+            Member member = animal.getAquarium().getMember();
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide) {
+                logger.info("Animal n° " + animalId + " envoyé");
+                return animal;
+
+            }
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+            return null;
+        }
+        return null;
+
+    }
+
+
 }
