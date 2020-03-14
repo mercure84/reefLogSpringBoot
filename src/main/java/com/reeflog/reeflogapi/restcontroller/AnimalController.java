@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class AnimalController {
 
@@ -129,6 +131,34 @@ public class AnimalController {
             return null;
         }
         return null;
+    }
+
+
+    @GetMapping(value="/api/deleteAnimals/{aquariumId}")
+    public List<Animal> deleteAnimals (@RequestHeader("Authorization") String token, @PathVariable int aquariumId){
+        try {
+            Aquarium aquarium = aquariumRepository.findById(aquariumId);
+            Member member = aquarium.getMember();
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide) {
+                List<Animal> animals = animalRepository.findAnimalsByAquarium(aquarium);
+
+                for (Animal animal : animals){
+                    animalRepository.delete(animal);
+                }
+                logger.info("Les " + animals.size() + " pensionnaires de l'aquarium n° " + aquariumId + " ont été supprimés de la BDD");
+                return animals;
+
+            }
+
+        } catch (Exception e){
+            logger.error(String.valueOf(e));
+            return null;
+
+        }
+
+        return null;
+
     }
 
 
