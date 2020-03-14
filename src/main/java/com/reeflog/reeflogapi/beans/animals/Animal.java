@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Data
 @Entity
-public abstract class Animal {
+public class Animal {
 
     @Id
     @GeneratedValue

@@ -1,4 +1,4 @@
-package com.reeflog.reeflogapi.beans.helpers;
+package com.reeflog.reeflogapi.beans.helpers.animals;
 
 import com.reeflog.reeflogapi.beans.animals.fishes.Fish;
 import lombok.Data;

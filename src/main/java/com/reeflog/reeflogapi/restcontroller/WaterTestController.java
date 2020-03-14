@@ -128,21 +128,20 @@ public class WaterTestController {
         WaterTest waterTest = waterTestForm.getWaterTest();
         Aquarium aquarium = aquariumRepository.findById(waterTestForm.getAquariumId());
         waterTest.setAquarium(aquarium);
+        Member member = aquarium.getMember();
         try {
-            Member member = waterTest.getAquarium().getMember();
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 waterTestRepository.save(waterTest);
-                logger.info("Le test n° " + waterTest.getId() + " a été mis à jour !");
+                logger.info("Le test n° " + waterTest + " a été mis à jour !");
                 return waterTest;
             }
 
         } catch (Exception e) {
-            System.out.println(e);
+            logger.error(String.valueOf(e));
             return null;
         }
         return null;
     }
-
 
 }
