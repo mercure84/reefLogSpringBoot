@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,49 +33,64 @@ public class AquariumController {
 
     @PostMapping(value = "/api/addNewReefAquarium")
     public ReefAquarium addNewReefAquarium(@RequestHeader("Authorization") String token, @RequestBody ReefAquariumForm reefAquariumForm) {
-        ReefAquarium newReefAquarium = new ReefAquarium();
 
-        Member member = memberRepository.findById(reefAquariumForm.getMemberId());
-        newReefAquarium.setMember(member);
-        newReefAquarium.setName(reefAquariumForm.getName());
-        newReefAquarium.setLength(reefAquariumForm.getLength());
-        newReefAquarium.setHeight(reefAquariumForm.getHeight());
-        newReefAquarium.setWidth(reefAquariumForm.getWidth());
-        newReefAquarium.setSumpVolume(reefAquariumForm.getSumpVolume());
-        newReefAquarium.setMainPopulation(reefAquariumForm.getMainPopulation());
-        newReefAquarium.setTypeOfMaintenance(reefAquariumForm.getTypeOfMaintenance());
-        aquariumRepository.save(newReefAquarium);
-        logger.info("Un nouvel aquarium a été enregistré " + newReefAquarium);
-        return newReefAquarium;
+        try {
+            ReefAquarium newReefAquarium = new ReefAquarium();
+            Member member = memberRepository.findById(reefAquariumForm.getMemberId());
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide) {
+                newReefAquarium.setMember(member);
+                newReefAquarium.setName(reefAquariumForm.getName());
+                newReefAquarium.setLength(reefAquariumForm.getLength());
+                newReefAquarium.setHeight(reefAquariumForm.getHeight());
+                newReefAquarium.setWidth(reefAquariumForm.getWidth());
+                newReefAquarium.setSumpVolume(reefAquariumForm.getSumpVolume());
+                newReefAquarium.setMainPopulation(reefAquariumForm.getMainPopulation());
+                newReefAquarium.setTypeOfMaintenance(reefAquariumForm.getTypeOfMaintenance());
+                aquariumRepository.save(newReefAquarium);
+                logger.info("Un nouvel aquarium a été enregistré " + newReefAquarium);
+                return newReefAquarium;
+            }
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+            return null;
+        }
+        return null;
     }
 
     @GetMapping(value = "/api/deleteAquarium/{id}")
     public String deleteAquarium(@RequestHeader("Authorization") String token, @PathVariable int id) {
-        Aquarium aquariumToDelete = aquariumRepository.findById(id);
-        aquariumRepository.delete(aquariumToDelete);
-        return "L'aquarium " + aquariumToDelete.getId() + " a bien été supprimé de la base";
+        try {
+            Aquarium aquarium = aquariumRepository.findById(id);
+            Member member = aquarium.getMember();
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide) {
+                aquariumRepository.delete(aquarium);
+                return "L'aquarium " + aquarium.getId() + " a bien été supprimé de la base";
+            }
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+            return null;
+        }
+        return null;
+
     }
 
     @GetMapping(value = "/api/getAquariumList/{memberId}")
     public List<Aquarium> getAquariumList(@RequestHeader("Authorization") String token, @PathVariable int memberId) {
-        List<Aquarium> listAquariums = new ArrayList<>();
         try {
             Member member = memberRepository.findById(memberId);
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
-            if (!isTokenValide) {
-                listAquariums = null;
-            } else {
-                listAquariums = aquariumRepository.findAquariumsByMember(member);
+            if (isTokenValide) {
+                List<Aquarium> listAquariums = aquariumRepository.findAquariumsByMember(member);
+                logger.info("Envoi de la liste des aquariums : pour le membre " + memberId);
+                return listAquariums;
             }
         } catch (Exception e) {
             logger.error(String.valueOf(e));
         }
-        logger.info("Envoi liste des aquariums : " + listAquariums);
-
-        return listAquariums;
+        return null;
     }
 
 
-
-
-    }
+}

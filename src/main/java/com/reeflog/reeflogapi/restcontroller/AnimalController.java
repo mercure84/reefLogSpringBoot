@@ -43,9 +43,10 @@ public class AnimalController {
 
     @PostMapping(value = "/api/addFish")
     public Animal addFish(@RequestHeader("Authorization") String token, @RequestBody FishForm fishForm) {
-        Aquarium aquarium = aquariumRepository.findById(fishForm.getAquariumId());
-        Member member = aquarium.getMember();
+
         try {
+            Aquarium aquarium = aquariumRepository.findById(fishForm.getAquariumId());
+            Member member = aquarium.getMember();
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 Fish fish = fishForm.getFish();
@@ -63,9 +64,10 @@ public class AnimalController {
 
     @PostMapping(value = "/api/addCoral")
     public Animal addCoral(@RequestHeader("Authorization") String token, @RequestBody CoralForm coralForm) {
-        Aquarium aquarium = aquariumRepository.findById(coralForm.getAquariumId());
-        Member member = aquarium.getMember();
+
         try {
+            Aquarium aquarium = aquariumRepository.findById(coralForm.getAquariumId());
+            Member member = aquarium.getMember();
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 Coral coral = new Coral();
@@ -92,9 +94,10 @@ public class AnimalController {
 
     @PostMapping(value = "/api/addReefCleaner")
     public Animal addReefCleaner(@RequestHeader("Authorization") String token, @RequestBody ReefCleanerForm reefCleanerForm) {
-        Aquarium aquarium = aquariumRepository.findById(reefCleanerForm.getAquariumId());
-        Member member = aquarium.getMember();
+
         try {
+            Aquarium aquarium = aquariumRepository.findById(reefCleanerForm.getAquariumId());
+            Member member = aquarium.getMember();
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 ReefCleaner reefCleaner = new ReefCleaner();
@@ -170,43 +173,44 @@ public class AnimalController {
 
     @PostMapping(value = "/api/updateAnimal")
     public Animal updateAnimal(@RequestHeader("Authorization") String token, @RequestBody AnimalForm animalForm) {
-        Animal animal = new Animal();
-
-        if (animalForm.getAnemone() != null) {
-            animal = animalForm.getAnemone();
-        }
-        if (animalForm.getCrustacean() != null) {
-            animal = animalForm.getCrustacean();
-        }
-        if (animalForm.getCucumber() != null) {
-            animal = animalForm.getCucumber();
-        }
-        if (animalForm.getFish() != null) {
-            animal = animalForm.getFish();
-        }
-        if (animalForm.getLps() != null) {
-            animal = animalForm.getLps();
-        }
-        if (animalForm.getSoft() != null) {
-            animal = animalForm.getSoft();
-        }
-        if (animalForm.getSps() != null) {
-            animal = animalForm.getSps();
-        }
-        if (animalForm.getMollusk() != null) {
-            animal = animalForm.getMollusk();
-        }
-        if (animalForm.getStar() != null) {
-            animal = animalForm.getStar();
-        }
-        if (animalForm.getUrchin() != null) {
-            animal = animalForm.getUrchin();
-        }
-
-        Aquarium aquarium = aquariumRepository.findById(animalForm.getAquariumId());
-        animal.setAquarium(aquarium);
-        Member member = aquarium.getMember();
         try {
+            Animal animal = new Animal();
+
+            if (animalForm.getAnemone() != null) {
+                animal = animalForm.getAnemone();
+            }
+            if (animalForm.getCrustacean() != null) {
+                animal = animalForm.getCrustacean();
+            }
+            if (animalForm.getCucumber() != null) {
+                animal = animalForm.getCucumber();
+            }
+            if (animalForm.getFish() != null) {
+                animal = animalForm.getFish();
+            }
+            if (animalForm.getLps() != null) {
+                animal = animalForm.getLps();
+            }
+            if (animalForm.getSoft() != null) {
+                animal = animalForm.getSoft();
+            }
+            if (animalForm.getSps() != null) {
+                animal = animalForm.getSps();
+            }
+            if (animalForm.getMollusk() != null) {
+                animal = animalForm.getMollusk();
+            }
+            if (animalForm.getStar() != null) {
+                animal = animalForm.getStar();
+            }
+            if (animalForm.getUrchin() != null) {
+                animal = animalForm.getUrchin();
+            }
+
+            Aquarium aquarium = aquariumRepository.findById(animalForm.getAquariumId());
+            animal.setAquarium(aquarium);
+            Member member = aquarium.getMember();
+
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 animalRepository.save(animal);
@@ -220,9 +224,8 @@ public class AnimalController {
         return null;
     }
 
-
-    @GetMapping(value="/api/getAnimals/{aquariumId}")
-    public List<Animal> getAnimals(@RequestHeader("Authorization") String token, @PathVariable int aquariumId){
+    @GetMapping(value = "/api/getAnimals/{aquariumId}")
+    public List<Animal> getAnimals(@RequestHeader("Authorization") String token, @PathVariable int aquariumId) {
         try {
             Aquarium aquarium = aquariumRepository.findById(aquariumId);
             Member member = aquarium.getMember();
@@ -239,9 +242,8 @@ public class AnimalController {
         return null;
     }
 
-
-    @GetMapping(value="/api/getAnimal/{animalId}")
-    public Animal getAnimal(@RequestHeader("Authorization") String token, @PathVariable int animalId){
+    @GetMapping(value = "/api/getAnimal/{animalId}")
+    public Animal getAnimal(@RequestHeader("Authorization") String token, @PathVariable int animalId) {
 
         try {
             Animal animal = animalRepository.findById(animalId);
@@ -257,8 +259,5 @@ public class AnimalController {
             return null;
         }
         return null;
-
     }
-
-
 }

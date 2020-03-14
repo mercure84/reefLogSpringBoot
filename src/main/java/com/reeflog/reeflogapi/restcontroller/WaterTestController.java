@@ -35,8 +35,6 @@ public class WaterTestController {
     @PostMapping(value = "/api/addNewWaterTest")
     public WaterTest addNewWaterTest(@RequestHeader("Authorization") String token, @RequestBody WaterTestForm waterTestForm) {
 
-        System.out.println(token);
-        System.out.println(waterTestForm);
         try {
             Aquarium aquarium = aquariumRepository.findById(waterTestForm.getAquariumId());
             Member member = aquarium.getMember();
@@ -125,11 +123,12 @@ public class WaterTestController {
 
     @PostMapping(value = "/api/updateWaterTest")
     public WaterTest updateWaterTest(@RequestHeader("Authorization") String token, @RequestBody WaterTestForm waterTestForm) {
-        WaterTest waterTest = waterTestForm.getWaterTest();
-        Aquarium aquarium = aquariumRepository.findById(waterTestForm.getAquariumId());
-        waterTest.setAquarium(aquarium);
-        Member member = aquarium.getMember();
+
         try {
+            WaterTest waterTest = waterTestForm.getWaterTest();
+            Aquarium aquarium = aquariumRepository.findById(waterTestForm.getAquariumId());
+            waterTest.setAquarium(aquarium);
+            Member member = aquarium.getMember();
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 waterTestRepository.save(waterTest);
