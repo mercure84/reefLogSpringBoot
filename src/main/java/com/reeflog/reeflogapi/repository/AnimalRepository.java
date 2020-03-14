@@ -9,6 +9,7 @@ import java.util.List;
 public interface AnimalRepository extends JpaRepository<Animal, Integer> {
 
     List<Animal> findAnimalsByAquarium(Aquarium aquarium);
+    Animal findById(int animalId);
 
 
 }

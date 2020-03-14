@@ -161,6 +161,32 @@ public class AnimalController {
 
     }
 
+    @GetMapping(value="/api/deleteOneAnimal/{animalId}")
+    public Animal deleteOneAnimal (@RequestHeader("Authorization") String token, @PathVariable int animalId){
+        try {
+            Animal animal = animalRepository.findById(animalId);
+            Member member = animal.getAquarium().getMember();
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide) {
+                    animalRepository.delete(animal);
+
+                logger.info("Le pensionnaire " + animal + " a été supprimé de la BDD");
+                return animal;
+
+            }
+
+        } catch (Exception e){
+            logger.error(String.valueOf(e));
+            return null;
+
+        }
+
+        return null;
+
+    }
+
+
+
 
 
 }
