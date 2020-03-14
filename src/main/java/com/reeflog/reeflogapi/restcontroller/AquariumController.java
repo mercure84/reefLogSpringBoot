@@ -92,5 +92,20 @@ public class AquariumController {
         return null;
     }
 
+    @GetMapping(value = "/api/getAquariumDetail/{aquariumId}")
+    public Aquarium getAquariumDetail(@RequestHeader("Authorization") String token, @PathVariable int aquariumId) {
+        try {
+            Aquarium aquarium = aquariumRepository.findById(aquariumId);
+            Member member = aquarium.getMember();
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide) {
+                return aquarium ;
+            }
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+        }
+        return null;
+    }
+
 
 }
