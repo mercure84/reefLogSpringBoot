@@ -47,9 +47,9 @@ public class WaterTestController {
                 waterTestRepository.save(waterTest);
                 logger.info("Un nouveau test d'eau a été ajouté pour l'aquarium n° " + aquarium.getId());
                 return waterTest;
-
             }
         } catch (Exception e) {
+            logger.error(String.valueOf(e));
             return null;
         }
         return null;
@@ -68,7 +68,7 @@ public class WaterTestController {
             }
 
         } catch (Exception e) {
-
+            logger.error(String.valueOf(e));
             return null;
         }
         return null;
@@ -89,7 +89,7 @@ public class WaterTestController {
                 return waterTest;
             }
         } catch (Exception e) {
-
+            logger.error(String.valueOf(e));
             return null;
         }
         return null;
@@ -115,7 +115,7 @@ public class WaterTestController {
 
             }
         } catch (Exception e) {
-
+            logger.error(String.valueOf(e));
             return null;
         }
         return null;
