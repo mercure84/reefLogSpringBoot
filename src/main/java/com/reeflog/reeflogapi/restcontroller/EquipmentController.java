@@ -62,6 +62,7 @@ public class EquipmentController {
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 Equipment equipment = equipmentForm.getEquipment();
+                equipment.setAquarium(aquarium);
                 equipmentRepository.save(equipment);
                 logger.info("L'équipement n° " + equipment.getId() + " a été mis à jour");
                 return equipment;
@@ -73,7 +74,7 @@ public class EquipmentController {
         return null;
     }
 
-    @GetMapping(value = "/api/getEquipmentList/{aquariumid}")
+    @GetMapping(value = "/api/getEquipmentList/{aquariumId}")
     public List<Equipment> getEquipmentList(@RequestHeader("Authorization") String token, @PathVariable int aquariumId) {
         try {
             Aquarium aquarium = aquariumRepository.findById(aquariumId);

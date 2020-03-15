@@ -16,12 +16,14 @@ public class Equipment {
     private int id;
     private TypeOfEquipment typeOfEquipment;
     private String mark;
+    private String model;
     private String description;
     private float power;
+    private int quantity;
 
     @ManyToOne
     private Aquarium aquarium;
 
-    public enum TypeOfEquipment {SKIMMER, STREAMPUMP, RETURNPUMP, LIGHT, DOSINGPUMP, AIRPUMP, CONTROLLER, FILTER, HEATING, OSMOLATOR, ULTRA_V }
+    public enum TypeOfEquipment {SKIMMER, STREAMPUMP, RETURNPUMP, LIGHT, DOSINGPUMP, AIRPUMP, CONTROLLER, FILTER, HEATING, OSMOLATOR, ULTRA_V, OTHER }
 
     }
