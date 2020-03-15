@@ -9,10 +9,10 @@ import javax.persistence.Entity;
 @Entity
 public class Fish extends Animal {
 
-    private FishCategory fishCategory;
+    private FishSpecies fishSpecies;
     private Sexe sex;
     public enum Sexe {MALE, FEMALE, UNDEFINED}
-    public enum FishCategory {
+    public enum FishSpecies {
         APOLEMICHTHYS, CENTROPYGE, CHAETODONTOPLUS, GENICANTHUS, POMACANTHUS, PYGOPLITES,
         ANTENNARIUS, HISTRIO,
         NEMANTHIAS, ODONTANTHIAS, PSEUDANTHIAS,

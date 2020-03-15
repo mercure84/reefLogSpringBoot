@@ -27,12 +27,12 @@ class ReefLogApiApplicationTests {
 
         Fish fish = new Fish();
         fish.setSex(Fish.Sexe.FEMALE);
-        fish.setFishCategory(Fish.FishCategory.AMPHIPRION);
+        fish.setFishSpecies(Fish.FishSpecies.AMPHIPRION);
         fish.setName("Ocellaris");
         fish.setQuantity(1);
         fish.setCurrentSize(Animal.CurrentSize.M);
         fish.setNotes("acheté au Poisson d'Or");
-        System.out.println("Poisson construit = " + fish.toString() + " " + fish.getFishCategory() + " " + fish.getName() + fish.getNotes());
+        System.out.println("Poisson construit = " + fish.toString() + " " + fish.getFishSpecies() + " " + fish.getName() + fish.getNotes());
 
 
 
