@@ -1,4 +1,4 @@
-package com.reeflog.reeflogapi.beans.helpers.animals;
+package com.reeflog.reeflogapi.beans.helpers;
 
 import com.reeflog.reeflogapi.beans.animals.corals.Anemone;
 import com.reeflog.reeflogapi.beans.animals.corals.Lps;
