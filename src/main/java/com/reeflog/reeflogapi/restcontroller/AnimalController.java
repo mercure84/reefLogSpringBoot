@@ -260,4 +260,16 @@ public class AnimalController {
         }
         return null;
     }
+
+
+    //controlleur qui permet d'alimenter les formulaires pour l'ajout de poissons, coraux, détritivores :=> envoie la liste des catégories de poissons, coraux, etc
+    @GetMapping (value="/api/getAnimalDataForm")
+    public String getAnimalDataForm() {
+
+        return null;
+
+    }
+
+
+
 }
