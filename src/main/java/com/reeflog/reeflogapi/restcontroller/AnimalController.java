@@ -251,6 +251,30 @@ public class AnimalController {
 
     }
 
-
+    //controlleur qui permet d'alimenter les formulaires pour l'ajout de poissons, coraux, détritivores :=> envoie la liste des catégories de poissons, coraux, etc
+    @GetMapping (value="/api/getAnimalSpecies/{animalKind}")
+    public Map<String, Enum<?>[]> getAnimalDataFormByType(@PathVariable String animalKind) {
+        Map<String, Enum<?>[]> species = new HashMap<String, Enum<?>[]>();
+        switch(animalKind) {
+            case "fish" :
+                species.put("fish", Fish.FishSpecies.values());
+                return species;
+            case  "coral" :
+                species.put("sps", Sps.SpsSpecies.values());
+                species.put("lps", Lps.LpsSpecies.values());
+                species.put("soft", Soft.SoftSpecies.values());
+                species.put("anemone", Anemone.AnemoneSpecies.values());
+                return species;
+            case "reefCleaner" :
+                species.put("star", Star.StarSpecies.values());
+                species.put("mollusk", Mollusk.MolluskSpecies.values());
+                species.put("crustacean", Crustacean.CrustaceanSpecies.values());
+                species.put("urchin", Urchin.UrchinSpecies.values());
+                species.put("cucumber", Cucumber.CucumberSpecies.values());
+                return species;
+            default :
+                return null;
+           }
+    }
 
 }
