@@ -3,6 +3,12 @@ package com.reeflog.reeflogapi.restcontroller;
 import com.reeflog.reeflogapi.ReefLogApiApplication;
 import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.beans.animals.Animal;
+import com.reeflog.reeflogapi.beans.animals.corals.Anemone;
+import com.reeflog.reeflogapi.beans.animals.corals.Lps;
+import com.reeflog.reeflogapi.beans.animals.corals.Soft;
+import com.reeflog.reeflogapi.beans.animals.corals.Sps;
+import com.reeflog.reeflogapi.beans.animals.fishes.Fish;
+import com.reeflog.reeflogapi.beans.animals.reefcleaners.*;
 import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import com.reeflog.reeflogapi.beans.helpers.AnimalForm;
 
@@ -15,7 +21,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class AnimalController {
@@ -225,10 +234,20 @@ public class AnimalController {
 
 
     //controlleur qui permet d'alimenter les formulaires pour l'ajout de poissons, coraux, détritivores :=> envoie la liste des catégories de poissons, coraux, etc
-    @GetMapping (value="/api/getAnimalDataForm")
-    public String getAnimalDataForm() {
-
-        return null;
+    @GetMapping (value="/api/getAnimalSpecies")
+    public Map<String, Enum<?>[]> getAnimalDataForm() {
+        Map<String, Enum<?>[]> species = new HashMap<String, Enum<?>[]>();
+        species.put("fish", Fish.FishSpecies.values());
+        species.put("star", Star.StarSpecies.values());
+        species.put("mollusk", Mollusk.MolluskSpecies.values());
+        species.put("crustacean", Crustacean.CrustaceanSpecies.values());
+        species.put("urchin", Urchin.UrchinSpecies.values());
+        species.put("cucumber", Cucumber.CucumberSpecies.values());
+        species.put("sps", Sps.SpsSpecies.values());
+        species.put("lps", Lps.LpsSpecies.values());
+        species.put("soft", Soft.SoftSpecies.values());
+        species.put("anemone", Anemone.AnemoneSpecies.values());
+        return species;
 
     }
 
