@@ -1,6 +1,6 @@
 package com.reeflog.reeflogapi.repository;
 
-import com.reeflog.reeflogapi.beans.Aquarium;
+import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import com.reeflog.reeflogapi.beans.WaterTest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
