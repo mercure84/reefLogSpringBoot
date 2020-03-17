@@ -258,12 +258,15 @@ public class AnimalController {
         switch(animalKind) {
             case "fish" :
                 species.put("fish", Fish.FishSpecies.values());
+                logger.info("Envoi liste de Species pour le type : FISH " );
                 return species;
             case  "coral" :
                 species.put("sps", Sps.SpsSpecies.values());
                 species.put("lps", Lps.LpsSpecies.values());
                 species.put("soft", Soft.SoftSpecies.values());
                 species.put("anemone", Anemone.AnemoneSpecies.values());
+                logger.info("Envoi liste de Species pour le type : CORAL " );
+
                 return species;
             case "reefCleaner" :
                 species.put("star", Star.StarSpecies.values());
@@ -271,6 +274,8 @@ public class AnimalController {
                 species.put("crustacean", Crustacean.CrustaceanSpecies.values());
                 species.put("urchin", Urchin.UrchinSpecies.values());
                 species.put("cucumber", Cucumber.CucumberSpecies.values());
+                logger.info("Envoi liste de Species pour le type : RECIFALCLEANER " );
+
                 return species;
             default :
                 return null;
