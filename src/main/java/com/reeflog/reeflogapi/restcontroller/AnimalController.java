@@ -103,7 +103,7 @@ public class AnimalController {
             Member member = aquarium.getMember();
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
-                List<Animal> animals = animalRepository.findAnimalsByAquarium(aquarium);
+                List<Animal> animals = animalRepository.findAnimalsByAquariumOrderByIncomingDateDesc(aquarium);
 
                 for (Animal animal : animals) {
                     animalRepository.delete(animal);
@@ -202,7 +202,7 @@ public class AnimalController {
             Member member = aquarium.getMember();
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
-                List<Animal> animals = animalRepository.findAnimalsByAquarium(aquarium);
+                List<Animal> animals = animalRepository.findAnimalsByAquariumOrderByIncomingDateDesc(aquarium);
                 logger.info("Liste d'animaux envoyés pour l'aquarium n°" + aquariumId);
                 return animals;
             }
