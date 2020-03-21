@@ -2,9 +2,11 @@ package com.reeflog.reeflogapi.restcontroller;
 
 
 import com.reeflog.reeflogapi.ReefLogApiApplication;
+import com.reeflog.reeflogapi.beans.Equipment;
 import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.beans.aquariums.ReefAquarium;
+import com.reeflog.reeflogapi.beans.helpers.EquipmentForm;
 import com.reeflog.reeflogapi.beans.helpers.ReefAquariumForm;
 import com.reeflog.reeflogapi.repository.AquariumRepository;
 import com.reeflog.reeflogapi.repository.MemberRepository;
@@ -99,5 +101,27 @@ public class AquariumController {
         }
         return null;
     }
+
+
+    @PostMapping(value = "/api/updateReefAquarium")
+    public Aquarium updateReefAquarium(@RequestHeader("Authorization") String token, @RequestBody ReefAquariumForm reefAquariumForm) {
+        try {
+            ReefAquarium newReefAquarium =  reefAquariumForm.getReefAquarium();
+            Member member = memberRepository.findById(reefAquariumForm.getMemberId());
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide) {
+                newReefAquarium.setMember(member);
+                aquariumRepository.save(newReefAquarium);
+
+                logger.info("L'aquarium n° " + newReefAquarium.getId() + " a été mis à jour");
+                return newReefAquarium;
+            }
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+            return null;
+        }
+        return null;
+    }
+
 
 }
