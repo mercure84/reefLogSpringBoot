@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import java.util.Date;
 
 @Data
 @Entity
@@ -14,12 +15,13 @@ public class Equipment {
 
     @Id @GeneratedValue
     private int id;
+    private Date dateInstallation = new Date();
     private TypeOfEquipment typeOfEquipment;
     private String mark;
     private String model;
     private String description;
-    private float power;
-    private int quantity;
+    private float power = 0;
+    private int quantity = 1;
 
     @ManyToOne
     private Aquarium aquarium;
