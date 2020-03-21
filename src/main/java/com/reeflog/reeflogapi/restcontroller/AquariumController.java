@@ -38,7 +38,7 @@ public class AquariumController {
             ReefAquarium newReefAquarium =  reefAquariumForm.getReefAquarium();
             Member member = memberRepository.findById(reefAquariumForm.getMemberId());
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
-            if (isTokenValide) {
+            if (isTokenValide && aquariumRepository.findAquariumsByMember(member).size() == 0) {
                 newReefAquarium.setMember(member);
                 aquariumRepository.save(newReefAquarium);
                 logger.info("Un nouvel aquarium a été enregistré " + newReefAquarium);

@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,7 +122,7 @@ public class AnimalController {
 
     }
 
-    @GetMapping(value = "/api/deleteOneAnimal/{animalId}")
+    @GetMapping(value = "/api/deleteAnimal/{animalId}")
     public Animal deleteOneAnimal(@RequestHeader("Authorization") String token, @PathVariable int animalId) {
         try {
             Animal animal = animalRepository.findById(animalId);
