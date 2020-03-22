@@ -23,6 +23,6 @@ public class Member {
     private String role = "USER";
     private MemberStatus memberStatus;
 
-    public enum MemberStatus {VALIDATION_EMAIL, BANNED, EMAIL_CONFIRMED }
+    public enum MemberStatus {VALIDATION_EMAIL, BANNED, EMAIL_CONFIRMED, BLOCKED }
 
 }

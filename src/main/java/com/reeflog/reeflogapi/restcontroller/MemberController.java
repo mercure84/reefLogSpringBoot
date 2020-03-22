@@ -92,6 +92,10 @@ public class MemberController {
         Member member = memberRepository.findById(signUpForm.getIdToUpdate());
         boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
         if (isTokenValide && signUpForm.checkPassWord()) {
+            if(member.getMemberStatus().equals(Member.MemberStatus.BLOCKED)){
+                throw new RuntimeException("Ce membre ne peut être modifié, il a été verrouillé par un administrateur");
+
+            }
             member.setRole("USER");
             member.setUserName(signUpForm.getUserName());
             member.setEmail(signUpForm.getEmail());
