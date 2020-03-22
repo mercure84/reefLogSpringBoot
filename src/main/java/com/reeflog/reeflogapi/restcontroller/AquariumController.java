@@ -38,7 +38,7 @@ public class AquariumController {
             ReefAquarium newReefAquarium =  reefAquariumForm.getReefAquarium();
             Member member = memberRepository.findById(reefAquariumForm.getMemberId());
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
-            if (isTokenValide) {
+            if (isTokenValide && aquariumRepository.findAquariumsByMember(member).size() == 0) {
                 newReefAquarium.setMember(member);
                 aquariumRepository.save(newReefAquarium);
                 logger.info("Un nouvel aquarium a été enregistré " + newReefAquarium);
@@ -99,5 +99,27 @@ public class AquariumController {
         }
         return null;
     }
+
+
+    @PostMapping(value = "/api/updateReefAquarium")
+    public Aquarium updateReefAquarium(@RequestHeader("Authorization") String token, @RequestBody ReefAquariumForm reefAquariumForm) {
+        try {
+            ReefAquarium newReefAquarium =  reefAquariumForm.getReefAquarium();
+            Member member = memberRepository.findById(reefAquariumForm.getMemberId());
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide) {
+                newReefAquarium.setMember(member);
+                aquariumRepository.save(newReefAquarium);
+
+                logger.info("L'aquarium n° " + newReefAquarium.getId() + " a été mis à jour");
+                return newReefAquarium;
+            }
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+            return null;
+        }
+        return null;
+    }
+
 
 }

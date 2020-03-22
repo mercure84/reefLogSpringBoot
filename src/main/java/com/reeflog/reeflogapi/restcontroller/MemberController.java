@@ -29,7 +29,7 @@ public class MemberController {
     @PostMapping(value = "/api/addNewMember")
     public Member addNewMember(@RequestBody SignUpForm signUpForm) throws RuntimeException {
 
-        if (!beanValidator.isSignupFormValide(signUpForm)){
+        if (!beanValidator.isSignupFormValide(signUpForm)) {
             throw new RuntimeException("Le formulaire SignupForm n'est pas valide ! " + signUpForm);
         }
 
@@ -73,19 +73,41 @@ public class MemberController {
 
     }
 
-    @GetMapping(value="/api/getMemberDetail/{email}")
-    public Member getMemberDetail(@RequestHeader("Authorization") String token, @PathVariable String email){
+    @GetMapping(value = "/api/getMemberDetail/{email}")
+    public Member getMemberDetail(@RequestHeader("Authorization") String token, @PathVariable String email) {
         Member member = memberRepository.findByEmail(email);
         boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
         if (isTokenValide) {
             logger.info("Envoi du détail du membre : " + member);
             return member;
-        }
-
-        else {
+        } else {
             return null;
         }
 
 
     }
+
+    @PostMapping(value = "/api/updateMember")
+    public Member updateMember(@RequestHeader("Authorization") String token, @RequestBody SignUpForm signUpForm) throws RuntimeException {
+        Member member = memberRepository.findById(signUpForm.getIdToUpdate());
+        boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+        if (isTokenValide && signUpForm.checkPassWord()) {
+            if(member.getMemberStatus().equals(Member.MemberStatus.BLOCKED)){
+                throw new RuntimeException("Ce membre ne peut être modifié, il a été verrouillé par un administrateur");
+
+            }
+            member.setRole("USER");
+            member.setUserName(signUpForm.getUserName());
+            member.setEmail(signUpForm.getEmail());
+            String encodedPassword = EncryptedPasswordUtils.encryptePassword(signUpForm.getPassword());
+            member.setPassword(encodedPassword);
+            memberRepository.save(member);
+            logger.info("Le member " + member + " a été mis à jour ");
+            return member;
+        } else {
+            throw new RuntimeException("Problème de token ou de mot de passe qui ne correspondent pas");
+        }
+
+    }
+
 }
