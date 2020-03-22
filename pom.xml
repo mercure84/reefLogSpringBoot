@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.reeflog</groupId>
 	<artifactId>reefLogApi</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>reefLogApi</name>
 	<description>API REST ReefLog</description>
 
