@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 public class SignUpForm {
 
+    private int idToUpdate ;
 
     @Size(min=3, max=15)
     private String userName;
@@ -22,5 +23,12 @@ public class SignUpForm {
 
     @NotNull
     private String repassword;
+
+
+    public boolean checkPassWord (){
+        return this.password.equals(this.repassword);
+    }
+
+
 
 }
