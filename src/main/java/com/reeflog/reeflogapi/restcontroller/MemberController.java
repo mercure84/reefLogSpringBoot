@@ -92,10 +92,10 @@ public class MemberController {
         Member member = memberRepository.findById(signUpForm.getIdToUpdate());
         boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
         if (isTokenValide && signUpForm.checkPassWord()) {
-            if(member.getMemberStatus().equals(Member.MemberStatus.BLOCKED)){
+            if(member.getMemberStatus() == Member.MemberStatus.BLOCKED){
                 throw new RuntimeException("Ce membre ne peut être modifié, il a été verrouillé par un administrateur");
 
-            }
+            } else {
             member.setRole("USER");
             member.setUserName(signUpForm.getUserName());
             member.setEmail(signUpForm.getEmail());
@@ -103,7 +103,7 @@ public class MemberController {
             member.setPassword(encodedPassword);
             memberRepository.save(member);
             logger.info("Le member " + member + " a été mis à jour ");
-            return member;
+            return member;}
         } else {
             throw new RuntimeException("Problème de token ou de mot de passe qui ne correspondent pas");
         }
