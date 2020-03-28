@@ -5,6 +5,7 @@ import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.repository.MemberRepository;
 import com.reeflog.reeflogapi.security.JwtTokenUtil;
 import com.reeflog.reeflogapi.utils.BeanValidator;
+import com.reeflog.reeflogapi.utils.EmailService;
 import com.reeflog.reeflogapi.utils.EncryptedPasswordUtils;
 import com.reeflog.reeflogapi.beans.helpers.SignUpForm;
 import org.slf4j.Logger;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private static final Logger logger = LoggerFactory.getLogger((ReefLogApiApplication.class));
+
+    @Autowired
+    EmailService emailService;
 
     @Autowired
     BeanValidator beanValidator;
@@ -30,7 +34,7 @@ public class MemberController {
     public Member addNewMember(@RequestBody SignUpForm signUpForm) throws RuntimeException {
 
         if (!beanValidator.isSignupFormValide(signUpForm)) {
-            throw new RuntimeException("Le formulaire SignupForm n'est pas valide ! " + signUpForm);
+            throw new RuntimeException("Le formulaire d'incription n'est pas valide ! " + signUpForm);
         }
 
 
@@ -49,7 +53,9 @@ public class MemberController {
             newMember.setPassword(encodedPassword);
             memberRepository.save(newMember);
             logger.info("Un nouveau membre a été ajouté : " + newMember);
-
+            String messageAdmin = newMember.getUserName().toUpperCase() + " s'est enregistré sur REEFLOG le " + memberByEmail.getSignupDate() + ",  son email : " + newMember.getEmail() ;
+            String emailAdmin = "julien.marcesse@gmail.com";
+            emailService.sendMail(emailAdmin, newMember.getUserName().toUpperCase() + " vient de s'inscrire sur ReefLog !", messageAdmin );
         }
 
         return newMember;
