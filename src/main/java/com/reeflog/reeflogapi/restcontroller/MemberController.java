@@ -53,9 +53,21 @@ public class MemberController {
             newMember.setPassword(encodedPassword);
             memberRepository.save(newMember);
             logger.info("Un nouveau membre a été ajouté : " + newMember);
-            String messageAdmin = newMember.getUserName().toUpperCase() + " s'est enregistré sur REEFLOG le " + memberByEmail.getSignupDate() + ",  son email : " + newMember.getEmail() ;
+
+            // envoi d'un mail à l'administrateur
+            String messageAdmin = newMember.getUserName().toUpperCase() + " s'est enregistré sur REEFLOG le " + newMember.getUserName().toUpperCase() + ",  son email : " + newMember.getEmail() ;
             String emailAdmin = "julien.marcesse@gmail.com";
             emailService.sendMail(emailAdmin, newMember.getUserName().toUpperCase() + " vient de s'inscrire sur ReefLog !", messageAdmin );
+
+
+            // envoi d'un mail au membre
+
+            String messageMember = "Cher " + newMember.getUserName().toUpperCase() + ",\n" + "Nous vous souhaitons la bienvenue sur l'application ReefLog. Votre mot de passe a été crypté et sauvegardé dans notre base de données, vous pouvez le changer à tout moment dans la rubrique paramètre de votre application.\n" +
+                    "Nous vous souhaitons une bonne utilisation, n'hésitez pas à nous remonter vos remarques et / ou bugs ! \n" +
+                    "L'équipe ReefLog" ;
+            emailService.sendMail(newMember.getEmail(),"BIENVENU " +newMember.getUserName().toUpperCase()+" SUR REEFLOG !" ,messageMember);
+
+
         }
 
         return newMember;
