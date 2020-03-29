@@ -18,7 +18,6 @@ public abstract class Aquarium {
     private float length;
     private float width;
     private float height;
-
     private byte[] picture ;
 
     private Date startDate;
