@@ -66,6 +66,30 @@ public class FileUploadController {
 
     }
 
+    @GetMapping("/api/deleteAquariumPicture/{aquariumId}")
+    public void deleteAquariumPicture(@RequestHeader("Authorization") String token, @PathVariable int aquariumId){
+
+        Aquarium aquarium = aquariumRepository.findById(aquariumId);
+        Member member = aquarium.getMember();
+        boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+
+        try {
+            if (isTokenValide){
+                aquarium.setPicture(null);
+                aquariumRepository.save(aquarium);
+                logger.info("L'image de l'aquarium n° " + aquariumId + " a été supprimée de la base");
+
+
+            }
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+        }
+
+    }
+
+
+
+
     @PostMapping("/api/uploadAquariumPicture/{aquariumId}")
     public void uploadAquariumPicture(@RequestHeader("Authorization") String token, @RequestBody MultipartFile file, @PathVariable int aquariumId) {
 
