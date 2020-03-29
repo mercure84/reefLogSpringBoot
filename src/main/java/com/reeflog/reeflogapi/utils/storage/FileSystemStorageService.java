@@ -36,6 +36,7 @@ public class FileSystemStorageService implements StorageService {
 		}
 	}
 
+/*
 	@Override
 	public Stream<Path> loadAll() {
 		try {
@@ -47,6 +48,7 @@ public class FileSystemStorageService implements StorageService {
 		}
 
 	}
+*/
 
 	@Override
 	public Path load(String filename) {
@@ -73,6 +75,11 @@ public class FileSystemStorageService implements StorageService {
 	@Override
 	public void deleteAll() {
 		FileSystemUtils.deleteRecursively(rootLocation.toFile());
+	}
+
+	@Override
+	public void deleteFile(String filename) throws IOException {
+		FileSystemUtils.deleteRecursively(rootLocation.getFileName());
 	}
 
 	@Override

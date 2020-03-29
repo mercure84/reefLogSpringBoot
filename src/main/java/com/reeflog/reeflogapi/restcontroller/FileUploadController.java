@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 
 @RestController
@@ -78,8 +80,7 @@ public class FileUploadController {
                 aquarium.setPicture(fis.readAllBytes());
                 aquariumRepository.save(aquarium);
                 fis.close();
-                storageService.deleteAll();
-
+                Files.delete(Paths.get(pictureToSave.getPath()));
             logger.info("Un fichier a été uploadé et sauvé dans la BDD");
             }
 
