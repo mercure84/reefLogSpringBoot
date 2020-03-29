@@ -2,8 +2,11 @@ package com.reeflog.reeflogapi.restcontroller;
 
 
 import com.reeflog.reeflogapi.ReefLogApiApplication;
+import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import com.reeflog.reeflogapi.repository.AquariumRepository;
+import com.reeflog.reeflogapi.repository.MemberRepository;
+import com.reeflog.reeflogapi.security.JwtTokenUtil;
 import com.reeflog.reeflogapi.utils.storage.StorageFileNotFoundException;
 import com.reeflog.reeflogapi.utils.storage.StorageService;
 import org.slf4j.Logger;
@@ -31,41 +34,40 @@ public class FileUploadController {
     AquariumRepository aquariumRepository;
 
     @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
     public FileUploadController(StorageService storageService) {
         this.storageService = storageService;
     }
 
-    @GetMapping("/")
-    public String listUploadedFiles(Model model) throws IOException {
 
-        model.addAttribute("files", storageService.loadAll().map(
-                path -> MvcUriComponentsBuilder.fromMethodName(FileUploadController.class,
-                        "serveFile", path.getFileName().toString()).build().toUri().toString())
-                .collect(Collectors.toList()));
-
-        return "uploadForm";
-    }
-
-    @GetMapping("/files/{filename:.+}")
+    @GetMapping("/api/downloadAquariumPicture/{aquariumId}")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
+    public ResponseEntity<Resource> serveFile(@RequestHeader("Authorization") String token,@PathVariable String filename) {
 
         Resource file = storageService.loadAsResource(filename);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
 
-    @PostMapping("/uploadFile")
-    public void handleFileUpload(@RequestBody MultipartFile file) {
-        Aquarium aquarium = aquariumRepository.findById(171);
-        // stockage du ficher au niveau local
-        storageService.store(file);
-        File pictureToSave = new File("uploads/" +file.getOriginalFilename() );
+    @PostMapping("/api/uploadAquariumPicture/{aquariumId}")
+    public void handleFileUpload(@RequestHeader("Authorization") String token, @RequestBody MultipartFile file, @PathVariable int aquariumId) {
+
         try {
+            Aquarium aquarium = aquariumRepository.findById(aquariumId);
+            Member member = aquarium.getMember();
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide){
+            storageService.store(file);
+            File pictureToSave = new File("uploads/" +file.getOriginalFilename() );
             FileInputStream fis = new FileInputStream(pictureToSave);
             aquarium.setPicture(fis.readAllBytes());
             aquariumRepository.save(aquarium);
-            logger.info("Un fichier a été uploadé");
+            logger.info("Un fichier a été uploadé");}
 
         } catch (
                 FileNotFoundException e) {
@@ -73,11 +75,7 @@ public class FileUploadController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
-
-    }
+            }
 
     @ExceptionHandler(StorageFileNotFoundException.class)
     public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {
