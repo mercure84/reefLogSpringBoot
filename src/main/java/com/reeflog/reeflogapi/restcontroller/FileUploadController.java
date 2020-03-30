@@ -57,6 +57,7 @@ public class FileUploadController {
         try {
             if (isTokenValide) {
                 byte[] picture = aquarium.getPicture();
+                logger.info("L'image du Tank n°" + aquariumId + " a été envoyée");
                 return picture;
             }
         } catch (Exception e) {
