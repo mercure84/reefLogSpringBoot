@@ -1,5 +1,6 @@
 package com.reeflog.reeflogapi.beans.aquariums;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.reeflog.reeflogapi.beans.Member;
 import lombok.Data;
 
@@ -18,6 +19,9 @@ public abstract class Aquarium {
     private float length;
     private float width;
     private float height;
+
+    @JsonIgnore
+    private byte[] picture ;
 
     private Date startDate;
 
