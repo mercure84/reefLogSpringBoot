@@ -1,5 +1,6 @@
 package com.reeflog.reeflogapi.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -18,7 +19,10 @@ public class Member {
     private String firstName;
     private String userName;
     private String email;
+
+    @JsonIgnore
     private String password;
+
     private Date signupDate = new Date();
     private String role = "USER";
     private MemberStatus memberStatus;
