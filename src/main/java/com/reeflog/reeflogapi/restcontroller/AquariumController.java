@@ -122,4 +122,16 @@ public class AquariumController {
     }
 
 
+    @GetMapping(value = "/api/getAllAquariums")
+    public List<Aquarium> getAllAquariums (){
+        try {
+            List<Aquarium> aquariums = aquariumRepository.findAll();
+            logger.info("Envoi de la liste complètes des aquariums");
+            return aquariums;
+        } catch(Exception e){
+                        logger.error(String.valueOf(e));
+                        return null;
+        }
+
+    }
 }
