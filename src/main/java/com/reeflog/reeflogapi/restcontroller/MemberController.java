@@ -11,6 +11,7 @@ import com.reeflog.reeflogapi.beans.helpers.SignUpForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -54,19 +55,23 @@ public class MemberController {
             memberRepository.save(newMember);
             logger.info("Un nouveau membre a été ajouté : " + newMember);
 
-            // envoi d'un mail à l'administrateur
-            String messageAdmin = newMember.getUserName().toUpperCase() + " s'est enregistré sur REEFLOG le " + newMember.getUserName().toUpperCase() + ",  son email : " + newMember.getEmail() ;
-            String emailAdmin = "julien.marcesse@gmail.com";
-            emailService.sendMail(emailAdmin, newMember.getUserName().toUpperCase() + " vient de s'inscrire sur ReefLog !", messageAdmin );
+            try {
+                // envoi d'un mail à l'administrateur
+                String messageAdmin = newMember.getUserName().toUpperCase() + " s'est enregistré sur REEFLOG le " + newMember.getUserName().toUpperCase() + ",  son email : " + newMember.getEmail();
+                String emailAdmin = "julien.marcesse@gmail.com";
+                emailService.sendMail(emailAdmin, newMember.getUserName().toUpperCase() + " vient de s'inscrire sur ReefLog !", messageAdmin);
 
 
-            // envoi d'un mail au membre
+                // envoi d'un mail au membre
 
-            String messageMember = "Cher " + newMember.getUserName().toUpperCase() + ",\n" + "Nous vous souhaitons la bienvenue sur l'application ReefLog. Votre mot de passe a été crypté et sauvegardé dans notre base de données, vous pouvez le changer à tout moment dans la rubrique paramètre de votre application.\n" +
-                    "Nous vous souhaitons une bonne utilisation, n'hésitez pas à nous remonter vos remarques et / ou bugs ! \n" +
-                    "L'équipe ReefLog" ;
-            emailService.sendMail(newMember.getEmail(),"BIENVENU " +newMember.getUserName().toUpperCase()+" SUR REEFLOG !" ,messageMember);
+                String messageMember = "Cher " + newMember.getUserName().toUpperCase() + ",\n" + "Nous vous souhaitons la bienvenue sur l'application ReefLog. Votre mot de passe a été crypté et sauvegardé dans notre base de données, vous pouvez le changer à tout moment dans la rubrique paramètre de votre application.\n" +
+                        "Nous vous souhaitons une bonne utilisation, n'hésitez pas à nous remonter vos remarques et / ou bugs ! \n" +
+                        "L'équipe ReefLog";
+                emailService.sendMail(newMember.getEmail(), "BIENVENU " + newMember.getUserName().toUpperCase() + " SUR REEFLOG !", messageMember);
+            } catch (Exception e) {
 
+                logger.error("Problemes dans l'envoi des mails lors de la création d'un nouveau membre");
+            }
 
         }
 
@@ -110,22 +115,22 @@ public class MemberController {
         Member member = memberRepository.findById(signUpForm.getIdToUpdate());
         boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
         if (isTokenValide && signUpForm.checkPassWord()) {
-            if(member.getMemberStatus() == Member.MemberStatus.BLOCKED){
+            if (member.getMemberStatus() == Member.MemberStatus.BLOCKED) {
                 throw new RuntimeException("Ce membre ne peut être modifié, il a été verrouillé par un administrateur");
 
             } else {
-            member.setRole("USER");
-            member.setUserName(signUpForm.getUserName());
-            member.setEmail(signUpForm.getEmail());
-            String encodedPassword = EncryptedPasswordUtils.encryptePassword(signUpForm.getPassword());
-            member.setPassword(encodedPassword);
-            memberRepository.save(member);
-            logger.info("Le member " + member + " a été mis à jour ");
-            return member;}
+                member.setRole("USER");
+                member.setUserName(signUpForm.getUserName());
+                member.setEmail(signUpForm.getEmail());
+                String encodedPassword = EncryptedPasswordUtils.encryptePassword(signUpForm.getPassword());
+                member.setPassword(encodedPassword);
+                memberRepository.save(member);
+                logger.info("Le member " + member + " a été mis à jour ");
+                return member;
+            }
         } else {
             throw new RuntimeException("Problème de token ou de mot de passe qui ne correspondent pas");
         }
 
     }
-
 }
