@@ -1,0 +1,2289 @@
+{
+	"info": {
+		"_postman_id": "513532c8-21ec-4254-ab1e-cb16c2dc291b",
+		"name": "TestReefLog",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "addNewMember",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bd36c492-4fdd-4cf6-80ae-e7f0f6329cf6",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.environment.set(\"MemberTestId\", jsonData.id);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userName\" : \"PseudoInteg\",\r\n    \"email\": \"test123@chaville.fr\",\r\n    \"password\" : \"test123\",\r\n    \"repassword\" : \"test123\"\r\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/addNewMember",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"addNewMember"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "falseLogin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b1572334-a68d-4fc3-bfdb-2e85ed9f6275",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 403\", function () { pm.response.to.have.status(403); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"test123@chaville.fr\",\r\n    \"password\": \"blablabla\"\r\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/login",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b1572334-a68d-4fc3-bfdb-2e85ed9f6275",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.environment.set(\"token\", 'Bearer '+jsonData.token);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"test123@chaville.fr\",\r\n    \"password\": \"test123\"\r\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/login",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "checkTokenTrue",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "41110d26-535d-41a8-94cf-21032c613b1c",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"pm.test(\"True is expected\", function(){",
+							"    pm.expect(jsonData.credentialValide).is.to.equal(true)});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"token\" : \"{{token}}\",\n\t\"email\" : \"test123@chaville.fr\" \n\t\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/checkToken",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"checkToken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "checkTokenFalse",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "41110d26-535d-41a8-94cf-21032c613b1c",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"pm.test(\"True is expected\", function(){",
+							"    pm.expect(jsonData.credentialValide).is.to.equal(false)});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"token\" : \"bearer jkfdzsghdsufjyhgsdjhfgjhdsfghjsdgfjhsdgfjhsgdfhjsgdfjhgsdjhfgsdjhfgjhdsfgjhdsfgjhdsgfjhdsgfjhdsgfjds\",\n\t\"email\" : \"test123@chaville.fr\" \n\t\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/checkToken",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"checkToken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addNewReefAquarium",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.environment.set(\"AquariumTestId\", jsonData.id);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"memberId\": {{MemberTestId}},\n    \"reefAquarium\" : {\n    \t\"name\": \"Mon Reefer 350\",\n\t    \"height\": 55,\n\t    \"width\": 50,\n\t    \"length\": 120,\n\t    \"sumpVolume\": 70,\n\t    \"typeOfMaintenance\" : \"BERLINOIS\",\n\t    \"mainPopulation\" : \"MIX\"\n    }}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/addNewReefAquarium",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"addNewReefAquarium"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "uploadAquariumPicture",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2e82e43f-00e5-4a67-92d2-af56d701b5cf",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/D:/Images/lux2/IMG_20160124_112111.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/uploadAquariumPicture/{{AquariumTestId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"uploadAquariumPicture",
+						"{{AquariumTestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "downloadAquariumPicture",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "38e8a617-7633-42d1-bb2d-2d20185bfb2e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{ipNetwork}}api/downloadAquariumPicture/{{AquariumTestId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"downloadAquariumPicture",
+						"{{AquariumTestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteAquariumPicture",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "38e8a617-7633-42d1-bb2d-2d20185bfb2e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{ipNetwork}}api/deleteAquariumPicture/{{AquariumTestId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"deleteAquariumPicture",
+						"{{AquariumTestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateReefAquarium",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"memberId\": {{MemberTestId}},\n    \"reefAquarium\" : {\n    \t\"id\" : {{AquariumTestId}},\n    \t\"name\": \"Mon Reefer XXX\",\n\t    \"height\": 80,\n\t    \"width\": 50,\n\t    \"length\": 120,\n\t    \"sumpVolume\": 70,\n\t    \"typeOfMaintenance\" : \"JAUBERT\",\n\t    \"mainPopulation\" : \"SOFT\"\n    }}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/updateReefAquarium",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"updateReefAquarium"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getMemberDetail",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/getMemberDetail/test123@chaville.fr",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"getMemberDetail",
+						"test123@chaville.fr"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllAquariums",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/getAllAquariums",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"getAllAquariums"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateMember",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"idToUpdate\" :  {{MemberTestId}},\r\n    \"userName\" : \"PseudoIntegUpdated\",\r\n    \"email\": \"pagodon@issy.fr\",\r\n    \"password\" : \"testAAAA\",\r\n    \"repassword\" : \"testAAAA\"\r\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/updateMember",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"updateMember"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "loginAfterUpdate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b1572334-a68d-4fc3-bfdb-2e85ed9f6275",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.environment.set(\"token\", 'Bearer '+jsonData.token);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{    \"username\": \"pagodon@issy.fr\",\r\n    \"password\" : \"testAAAA\"}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/login",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addEquipmentSkimmer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.environment.set(\"EquipmentId\", jsonData.id);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n    \"equipment\" : {\n\t    \t\"typeOfEquipment\" : \"SKIMMER\",\n\t    \t\"mark\" : \"Aqua-Medic\",\n\t    \t\"description\" : \"K2 acheté chez Recifart\",\n\t    \t\"quantity\" : 1,\n\t    \t\"power\" : 40\n\t\t}\n    \n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/addEquipment",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"addEquipment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addEquipmentStreamPump",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n    \"equipment\" : {\n\t    \t\"typeOfEquipment\" : \"STREAMPUMP\",\n\t    \t\"mark\" : \"Tunze\",\n\t    \t\"model\" : \"9850.2\",\n\t    \t\"description\" : \"pompe très bruyante\",\n\t    \t\"quantity\" : 2,\n\t    \t\"power\" : 12\n\t\t}\n    \n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/addEquipment",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"addEquipment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addEquipmentLight",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n    \"equipment\" : {\n\t    \t\"typeOfEquipment\" : \"LIGHT\",\n\t    \t\"mark\" : \"Maxspect\",\n\t    \t\"model\":\"Recurve 90\",\n\t    \t\"description\" : \"j'en suis pas content\",\n\t    \t\"power\" : 240,\n\t    \t\"quantity\" : 1\n\t\t}\n    \n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/addEquipment",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"addEquipment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addAnimalFish",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n    \"fish\" : {\n\t    \t\"fishSpecies\" : \"AMPHIPRION\",\n\t    \t\"sex\" : \"MALE\",\n\t    \t\"name\" : \"ocellaris\",\n\t    \t\"quantity\" : 1,\n\t\t    \"notes\" : \"acheté au monde de la mer\",\n\t\t    \"currentSize\" : \"XS\"}\n    \n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/addAnimal",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"addAnimal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addAnimalCoralAnemone",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.environment.set(\"AnemoneId\", jsonData.id);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n    \"anemone\" : {\n\t    \"quantity\": 1,\n\t    \"name\": \"Quadricolor\",\n\t    \"notes\": \"L'entacméa s'associe avec le clown Clarkii\",\n\t    \"currentSize\": \"S\",\n\t    \"anemoneSpecies\": \"ENTACMEA\"\n}\n    \n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/addAnimal",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"addAnimal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addAnimalCoralSps",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n    \"sps\" : {\n\t    \"quantity\": 1,\n\t    \"name\": \"Samarensis\",\n\t    \"notes\": \"les SPS sont des coraux durs à petits polypes\",\n\t    \"currentSize\": \"S\",\n\t    \"spsSpecies\": \"MONTIPORA\"\n}\n    \n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/addAnimal",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"addAnimal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addAnimalUrchin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n    \"urchin\" : {\n\t    \"quantity\": 1,\n\t    \"name\": \"globulus\",\n\t    \"notes\": \"Oursin de type mespilla globulus acheté chez Poisson d'Or\",\n\t    \"currentSize\": \"L\",\n\t    \"urchinSpecies\": \"MESPILIA\"\n}\n        }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/addAnimal",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"addAnimal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addAnimalStar",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.environment.set(\"AnimalId\", jsonData.id);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n    \"star\" : {\n\t    \"quantity\": 1,\n\t    \"name\": \"globulus\",\n\t    \"notes\": \"Oursin de type mespilla globulus acheté chez Poisson d'Or\",\n\t    \"currentSize\": \"L\",\n\t    \"starSpecies\": \"ARCHASTER\"\n}\n        }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/addAnimal",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"addAnimal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addAnimalMollusk",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n    \"urchin\" : {\n\t    \"quantity\": 1,\n\t    \"name\": \"globulus\",\n\t    \"notes\": \"Oursin de type mespilla globulus acheté chez Poisson d'Or\",\n\t    \"currentSize\": \"L\",\n\t    \"urchinSpecies\": \"MESPILIA\"\n}\n        }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/addAnimal",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"addAnimal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addNewWaterTest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.environment.set(\"WaterTestId\", jsonData.id);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n    \"waterTest\" : {\n    \t\"temperature\" : 25.6,\n\t    \"salinity\" : 35,\n\t    \"alcalinity\" : 9.3,\n\t    \"ph\" : 8.3,\n\t    \"calcium\" : 470,\n\t    \"magnesium\" : 1480,\n\t    \"ammoniac\" : 0,\n\t    \"nitrates\" : 0.10,\n\t    \"nitrites\" : 0,\n\t    \"phosphates\" : 0.03\n    }\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/addNewWaterTest",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"addNewWaterTest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateWaterTest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n\t\"waterTest\" : {\n\t    \"id\": {{WaterTestId}},\n\t    \"date\": \"2020-03-10T14:53:21.148+0000\",\n\t    \"temperature\": 30.0,\n\t    \"salinity\": 30.0,\n\t    \"alcalinity\": 10.3,\n\t    \"ph\": 7.3,\n\t    \"calcium\": 470,\n\t    \"magnesium\": 1480,\n\t    \"ammoniac\": 2.0,\n\t    \"nitrates\": 0.1,\n\t    \"nitrites\": 0.0,\n\t    \"phosphates\": 0.03,\n\t    \"silicates\": 2.1\n}\n    }\n    ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/updateWaterTest",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"updateWaterTest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateAnimal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n\t    \"anemone\" : {\n\t    \t\"id\" : {{AnemoneId}},\n\t\t    \"quantity\": 1,\n\t\t    \"name\": \"Magnifica\",\n\t\t    \"notes\": \"L'heteractis magnifica s'associe avec le clown ocellaris\",\n\t\t    \"currentSize\": \"S\",\n\t\t    \"anemoneSpecies\": \"HETERACTIS\"\n\t}\n      }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/updateAnimal",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"updateAnimal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateEquipmentSkimmer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n    \"equipment\" : {\n    \t\t\"id\":{{EquipmentId}},\n\t    \t\"typeOfEquipment\" : \"SKIMMER\",\n\t    \t\"mark\" : \"Royal Exclusiv\",\n\t    \t\"description\" : \"BBK 180 acheté chez Recifart\",\n\t    \t\"quantity\" : 1,\n\t    \t\"power\" : 48\n\t\t}\n    \n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/updateEquipment",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"updateEquipment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addNewWaterTest2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n    \"waterTest\" : {\n    \t\"temperature\" : 24.6,\n\t    \"salinity\" : 34,\n\t    \"alcalinity\" : 9.9,\n\t    \"ph\" : 8.5,\n\t    \"calcium\" : 480,\n\t    \"magnesium\" : 1480,\n\t    \"ammoniac\" : 0,\n\t    \"nitrates\" : 0.25,\n\t    \"nitrites\" : 0,\n\t    \"phosphates\" : 0.10\n    }\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/addNewWaterTest",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"addNewWaterTest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addNewWaterTest3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"aquariumId\": {{AquariumTestId}},\n    \"waterTest\" : {\n    \t\"temperature\" : 27.6,\n\t    \"salinity\" : 33,\n\t    \"alcalinity\" : 6.3,\n\t    \"ph\" : 7.9,\n\t    \"calcium\" : 395,\n\t    \"magnesium\" : 1310,\n\t    \"ammoniac\" : 0,\n\t    \"nitrates\" : 0.0,\n\t    \"nitrites\" : 0,\n\t    \"phosphates\" : 0.03\n    }\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/addNewWaterTest",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"addNewWaterTest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAnimalSpecies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/getAnimalSpecies",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"getAnimalSpecies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAnimalSpeciesCoral",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/getAnimalSpecies/coral",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"getAnimalSpecies",
+						"coral"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAnimalSpeciesReefCleaner",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/getAnimalSpecies/fish",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"getAnimalSpecies",
+						"fish"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAnimalSpeciesFish",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/getAnimalSpecies",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"getAnimalSpecies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAquariumDetail",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"memberId\": {{MemberTestId}},\n    \"name\": \"Mon Reefer 350\",\n    \"height\": 55,\n    \"width\": 50,\n    \"length\": 120,\n    \"sumpVolume\": 70,\n    \"typeOfMaintenance\" : \"BERLINOIS\",\n    \"mainPopulation\" : \"MIX\"\n    }",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/getAquariumDetail/{{AquariumTestId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"getAquariumDetail",
+						"{{AquariumTestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAquariumList",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"memberId\": {{MemberTestId}},\n    \"name\": \"Mon Reefer 350\",\n    \"height\": 55,\n    \"width\": 50,\n    \"length\": 120,\n    \"sumpVolume\": 70,\n    \"typeOfMaintenance\" : \"BERLINOIS\",\n    \"mainPopulation\" : \"MIX\"\n    }",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/getAquariumList/{{MemberTestId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"getAquariumList",
+						"{{MemberTestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getWaterTestList",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{ipNetwork}}api/getWaterTestList/{{AquariumTestId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"getWaterTestList",
+						"{{AquariumTestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getEquipmentList",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{ipNetwork}}api/getEquipmentList/{{AquariumTestId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"getEquipmentList",
+						"{{AquariumTestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAnimals",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/getAnimals/{{AquariumTestId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"getAnimals",
+						"{{AquariumTestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getOneAnimal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/getAnimal/{{AnemoneId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"getAnimal",
+						"{{AnemoneId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getOneEquipment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f58d8c6-db84-4a25-ad79-77200a13503f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{ipNetwork}}api/getEquipment/{{EquipmentId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"getEquipment",
+						"{{EquipmentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteOneWaterTest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e292b432-2413-4e1b-84da-1798e6eb4624",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{ipNetwork}}api/deleteWaterTest/{{WaterTestId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"deleteWaterTest",
+						"{{WaterTestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteOneAnimal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e292b432-2413-4e1b-84da-1798e6eb4624",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{ipNetwork}}api/deleteAnimal/{{AnimalId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"deleteAnimal",
+						"{{AnimalId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteAllAnimals",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e292b432-2413-4e1b-84da-1798e6eb4624",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{ipNetwork}}api/deleteAnimals/{{AquariumTestId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"deleteAnimals",
+						"{{AquariumTestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteAllTests",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e292b432-2413-4e1b-84da-1798e6eb4624",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{ipNetwork}}api/deleteWaterTestList/{{AquariumTestId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"deleteWaterTestList",
+						"{{AquariumTestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteOneEquipment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e292b432-2413-4e1b-84da-1798e6eb4624",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{ipNetwork}}api/deleteEquipment/{{EquipmentId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"deleteEquipment",
+						"{{EquipmentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteAllEquipments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e292b432-2413-4e1b-84da-1798e6eb4624",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{ipNetwork}}api/deleteEquipmentList/{{AquariumTestId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"deleteEquipmentList",
+						"{{AquariumTestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteAquarium",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e292b432-2413-4e1b-84da-1798e6eb4624",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{ipNetwork}}api/deleteAquarium/{{AquariumTestId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"deleteAquarium",
+						"{{AquariumTestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteMember",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e292b432-2413-4e1b-84da-1798e6eb4624",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{ipNetwork}}api/deleteMember/{{MemberTestId}}",
+					"host": [
+						"{{ipNetwork}}api"
+					],
+					"path": [
+						"deleteMember",
+						"{{MemberTestId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
