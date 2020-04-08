@@ -107,7 +107,7 @@
 	<profile>
 		<id>dev</id>
 		<activation>
-			<activeByDefault>false</activeByDefault>
+			<activeByDefault>true</activeByDefault>
 		</activation>
 		<properties>
 			<springProfile>dev</springProfile>
@@ -136,7 +136,7 @@
 				<springProfile>homol</springProfile>
 			</properties>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 		</profile>
 	</profiles>
