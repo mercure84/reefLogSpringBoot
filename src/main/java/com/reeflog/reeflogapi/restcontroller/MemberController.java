@@ -46,7 +46,7 @@ public class MemberController {
         Member newMember = new Member();
 
         if (memberByEmail != null || memberByUsername != null) {
-            throw new RuntimeException("Utilisateur déjà enregistré ! changer d'email ou de username");
+            throw new MemberException("Utilisateur déjà enregistré ! changer d'email ou de username");
         } else {
             newMember.setUserName(signUpForm.getUserName());
             newMember.setEmail(signUpForm.getEmail());
