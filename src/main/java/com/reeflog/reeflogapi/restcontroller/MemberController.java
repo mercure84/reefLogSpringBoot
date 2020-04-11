@@ -57,7 +57,7 @@ public class MemberController {
 
             try {
                 // envoi d'un mail à l'administrateur
-                String messageAdmin = newMember.getUserName().toUpperCase() + " s'est enregistré sur REEFLOG le " + newMember.getUserName().toUpperCase() + ",  son email : " + newMember.getEmail();
+                String messageAdmin = newMember.getUserName().toUpperCase() + " s'est enregistré sur REEFLOG le " + newMember.getSignupDate().toString() + ",  son email : " + newMember.getEmail();
                 String emailAdmin = "julien.marcesse@gmail.com";
                 emailService.sendMail(emailAdmin, newMember.getUserName().toUpperCase() + " vient de s'inscrire sur ReefLog !", messageAdmin);
 
