@@ -54,7 +54,6 @@ public class AlertControllerTest {
         existingAlert.setTypeTest(Alert.TypeTest.PH);
         when(aquariumRepository.findById(alertForm.getAquariumId())).thenReturn(aquarium);
         when(jwtTokenUtil.validateCustomTokenForMember(token, member)).thenReturn(true);
-        when(alertRepository.findByAquariumAndAndTypeTest(aquarium, alert.getTypeTest())).thenReturn(existingAlert);
         alertController.addOneAlert(token, alertForm);
 
     }
