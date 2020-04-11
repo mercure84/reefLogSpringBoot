@@ -10,5 +10,7 @@ public interface AlertRepository extends JpaRepository<Alert, Integer> {
 
 List<Alert> findAllByAquarium (Aquarium aquarium);
 
+Alert findByAquariumAndAndTypeTest(Aquarium aquarium, Alert.TypeTest typeTest);
+
 
 }

@@ -41,6 +41,12 @@ public class AlertController {
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 Alert alert = alertForm.getAlerts().get(0);
+
+                Alert checkAlert = alertRepository.findByAquariumAndAndTypeTest(aquarium, alert.getTypeTest());
+                if (checkAlert != null) {
+                    alert.setId(checkAlert.getId());
+                }
+
                 alert.setAquarium(aquarium);
                 alertRepository.save(alert);
                 logger.info("Une nouvelle alerte a été enregistrée " + alert);
@@ -61,11 +67,14 @@ public class AlertController {
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 List<Alert> alerts = alertForm.getAlerts();
-                //on récupère la liste d'alertes déjà existantes sur l'aquarium ; on ne veut pas 2 alertes sur le même test pour le même aquarium
-                //List<Alert> existingAlerts = alertRepository.findAllByAquarium(aquarium);
                 for (Alert alert : alerts) {
+                    //pour chaque alerte on regarde si une alerte existe avec la concordance aquarium / TypeTest
+                    Alert checkAlert = alertRepository.findByAquariumAndAndTypeTest(aquarium, alert.getTypeTest());
+                    //si on a un résultat on regarde si le TypeTest est équivalent, si oui on set l'iD pour faire un save-update
+                    if (checkAlert != null && checkAlert.getTypeTest().equals(alert.getTypeTest())) {
+                        alert.setId(checkAlert.getId());
+                    }
                     alert.setAquarium(aquarium);
-
                     alertRepository.save(alert);
                 }
                 logger.info("Nous avons enregistré une liste de " + alerts.size() + " alerts, sur l'aquarium n° " + aquarium.getId());
@@ -86,7 +95,7 @@ public class AlertController {
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 List<Alert> alerts = alertRepository.findAllByAquarium(aquarium);
-                logger.info("Une liste d'alerte a été retournée pour l'aquarium n° " + aquariumId);
+                logger.info("Une liste de " + alerts.size() + " alertes a été retournée pour l'aquarium n° " + aquariumId);
                 return alerts;
             }
         } catch (Exception e) {
@@ -110,7 +119,7 @@ public class AlertController {
 
                     alertRepository.delete(alert);
                 }
-                logger.info("Les " + alerts.size() + " alertes de l'aquarium N° " + aquariumId + " ont té supprimées de la BDD");
+                logger.info("Les " + alerts.size() + " alertes de l'aquarium N° " + aquariumId + " ont été supprimées de la BDD");
                 return alerts;
             }
 
