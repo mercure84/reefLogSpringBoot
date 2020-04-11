@@ -2,6 +2,7 @@ package com.reeflog.reeflogapi.restcontroller;
 
 import com.reeflog.reeflogapi.ReefLogApiApplication;
 import com.reeflog.reeflogapi.beans.Member;
+import com.reeflog.reeflogapi.exceptions.MemberException;
 import com.reeflog.reeflogapi.repository.MemberRepository;
 import com.reeflog.reeflogapi.security.JwtTokenUtil;
 import com.reeflog.reeflogapi.utils.BeanValidator;
@@ -11,7 +12,6 @@ import com.reeflog.reeflogapi.beans.helpers.SignUpForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,21 +32,21 @@ public class MemberController {
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping(value = "/api/addNewMember")
-    public Member addNewMember(@RequestBody SignUpForm signUpForm) throws RuntimeException {
+    public Member addNewMember(@RequestBody SignUpForm signUpForm) throws Exception {
 
         if (!beanValidator.isSignupFormValide(signUpForm)) {
-            throw new RuntimeException("Le formulaire d'incription n'est pas valide ! " + signUpForm);
+            throw new MemberException("Le formulaire d'incription n'est pas valide ! " + signUpForm);
         }
 
 
         if (!signUpForm.getPassword().equals(signUpForm.getRepassword()))
-            throw new RuntimeException(("You must confirm your password"));
+            throw new MemberException(("You must confirm your password"));
         Member memberByEmail = memberRepository.findByEmail(signUpForm.getEmail());
         Member memberByUsername = memberRepository.findByUserName(signUpForm.getUserName());
         Member newMember = new Member();
 
         if (memberByEmail != null || memberByUsername != null) {
-            throw new RuntimeException("Utilisateur déjà enregistré ! changer d'email ou de username");
+            throw new MemberException("Utilisateur déjà enregistré ! changer d'email ou de username");
         } else {
             newMember.setUserName(signUpForm.getUserName());
             newMember.setEmail(signUpForm.getEmail());
