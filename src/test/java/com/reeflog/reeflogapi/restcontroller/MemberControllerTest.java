@@ -4,7 +4,6 @@ import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.beans.helpers.SignUpForm;
 import com.reeflog.reeflogapi.exceptions.MemberException;
 import com.reeflog.reeflogapi.repository.MemberRepository;
-import com.reeflog.reeflogapi.restcontroller.MemberController;
 import com.reeflog.reeflogapi.security.JwtTokenUtil;
 import com.reeflog.reeflogapi.utils.BeanValidator;
 import org.junit.Test;
@@ -23,7 +22,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MemberControllerTest {
 
-
     @InjectMocks
     MemberController memberController;
 
@@ -35,8 +33,6 @@ public class MemberControllerTest {
 
     @Mock
     JwtTokenUtil jwtTokenUtil;
-
-
 
     // test validant qu'un membre ne peut pas s'enregistrer avec une adresse déjà présente en base
     @Test(expected = MemberException.class)
