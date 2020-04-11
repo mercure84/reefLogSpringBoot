@@ -12,10 +12,7 @@ import com.reeflog.reeflogapi.security.JwtTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -64,11 +61,56 @@ public class AlertController {
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 List<Alert> alerts = alertForm.getAlerts();
+                //on récupère la liste d'alertes déjà existantes sur l'aquarium ; on ne veut pas 2 alertes sur le même test pour le même aquarium
+                //List<Alert> existingAlerts = alertRepository.findAllByAquarium(aquarium);
                 for (Alert alert : alerts) {
                     alert.setAquarium(aquarium);
+
                     alertRepository.save(alert);
                 }
                 logger.info("Nous avons enregistré une liste de " + alerts.size() + " alerts, sur l'aquarium n° " + aquarium.getId());
+                return alerts;
+            }
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+            return null;
+        }
+        return null;
+    }
+
+    @GetMapping(value = "/api/getAlerts/{aquariumId}")
+    public List<Alert> getAlerts(@RequestHeader("Authorization") String token, @PathVariable int aquariumId) {
+        try {
+            Aquarium aquarium = aquariumRepository.findById(aquariumId);
+            Member member = aquarium.getMember();
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide) {
+                List<Alert> alerts = alertRepository.findAllByAquarium(aquarium);
+                logger.info("Une liste d'alerte a été retournée pour l'aquarium n° " + aquariumId);
+                return alerts;
+            }
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+            return null;
+        }
+        return null;
+    }
+
+
+    @GetMapping(value = "/api/deleteAlerts/{aquariumId}")
+    public List<Alert> deleteAlerts(@RequestHeader("Authorization") String token, @PathVariable int aquariumId) {
+        try {
+            Aquarium aquarium = aquariumRepository.findById(aquariumId);
+            Member member = aquarium.getMember();
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide) {
+                List<Alert> alerts = alertRepository.findAllByAquarium(aquarium);
+
+                for (Alert alert : alerts) {
+
+                    alertRepository.delete(alert);
+                }
+                logger.info("Les " + alerts.size() + " alertes de l'aquarium N° " + aquariumId + " ont té supprimées de la BDD");
                 return alerts;
             }
 
@@ -78,8 +120,5 @@ public class AlertController {
         }
         return null;
 
-
     }
-
-
 }

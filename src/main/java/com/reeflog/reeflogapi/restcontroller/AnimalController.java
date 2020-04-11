@@ -222,7 +222,6 @@ public class AnimalController {
             if (isTokenValide) {
                 logger.info("Animal n° " + animalId + " envoyé");
                 return animal;
-
             }
         } catch (Exception e) {
             logger.error(String.valueOf(e));
@@ -250,7 +249,7 @@ public class AnimalController {
 
     }
 
-    //controlleur qui permet d'alimenter les formulaires pour l'ajout de poissons, coraux, détritivores :=> envoie la liste des catégories de poissons, coraux, etc
+// envoie la liste des espèces pour un seul type d'animal
     @GetMapping (value="/api/getAnimalSpecies/{animalKind}")
     public Map<String, Enum<?>[]> getAnimalDataFormByType(@PathVariable String animalKind) {
         Map<String, Enum<?>[]> species = new HashMap<String, Enum<?>[]>();

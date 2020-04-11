@@ -38,7 +38,6 @@ public class WaterTestController {
         try {
             Aquarium aquarium = aquariumRepository.findById(waterTestForm.getAquariumId());
             Member member = aquarium.getMember();
-            // check token
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 WaterTest waterTest = waterTestForm.getWaterTest();
