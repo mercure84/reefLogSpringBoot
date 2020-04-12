@@ -1,5 +1,6 @@
 package com.reeflog.reeflogapi.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import lombok.Data;
 
@@ -19,6 +20,8 @@ public class Alert {
     private float targetValue;
     private int dayInterval = 7;
     private boolean isActive = false;
+
+    @JsonIgnore
     @ManyToOne
     private Aquarium aquarium;
 
