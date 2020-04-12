@@ -3,6 +3,7 @@ package com.reeflog.reeflogapi.restcontroller;
 import com.reeflog.reeflogapi.ReefLogApiApplication;
 import com.reeflog.reeflogapi.beans.Alert;
 import com.reeflog.reeflogapi.beans.Member;
+import com.reeflog.reeflogapi.beans.WaterTest;
 import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import com.reeflog.reeflogapi.beans.helpers.AlertForm;
 import com.reeflog.reeflogapi.repository.AlertRepository;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -67,18 +69,9 @@ public class AlertController {
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 List<Alert> alerts = alertForm.getAlerts();
-                for (Alert alert : alerts) {
-                    //pour chaque alerte on regarde si une alerte existe avec la concordance aquarium / TypeTest
-                    Alert checkAlert = alertRepository.findByAquariumAndAndTypeTest(aquarium, alert.getTypeTest());
-                    //si on a un résultat on regarde si le TypeTest est équivalent, si oui on set l'iD pour faire un save-update
-                    if (checkAlert != null && checkAlert.getTypeTest().equals(alert.getTypeTest())) {
-                        alert.setId(checkAlert.getId());
-                    }
-                    alert.setAquarium(aquarium);
-                    alertRepository.save(alert);
-                }
-                logger.info("Nous avons enregistré une liste de " + alerts.size() + " alerts, sur l'aquarium n° " + aquarium.getId());
-                return alerts;
+                List<Alert> alertsData = saveAlertHelper(alerts, aquarium);
+                logger.info("Nous avons enregistré une liste de " + alertsData.size() + " alerts, sur l'aquarium n° " + aquarium.getId());
+                return alertsData;
             }
         } catch (Exception e) {
             logger.error(String.valueOf(e));
@@ -95,9 +88,36 @@ public class AlertController {
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 List<Alert> alerts = alertRepository.findAllByAquarium(aquarium);
+                //si le nombre d'alertes est null ou < au nombre d'alertes possible, on instancie une liste d'alertes inactives
+                boolean isAlertsEmpty = alerts.size() == 0 ;
+                if (alerts.size() < WaterTest.TypeTest.values().length) {
+                    List<Alert> missingAlerts = new ArrayList<>();
+                    for (WaterTest.TypeTest type : WaterTest.TypeTest.values()) {
+                        if (isAlertsEmpty){
+                            Alert newAlert = new Alert();
+                            newAlert.setAquarium(aquarium);
+                            newAlert.setTypeTest(type);
+                            missingAlerts.add(newAlert);
+
+                        } else {
+
+                        for (Alert alert : alerts) {
+                            if (!alert.getTypeTest().equals(type)) {
+                                Alert newAlert = new Alert();
+                                newAlert.setAquarium(aquarium);
+                                newAlert.setTypeTest(type);
+                                missingAlerts.add(newAlert);
+                            }
+                        }}
+                    }
+                   alerts = saveAlertHelper(missingAlerts, aquarium);
+                }
+
                 logger.info("Une liste de " + alerts.size() + " alertes a été retournée pour l'aquarium n° " + aquariumId);
                 return alerts;
             }
+
+
         } catch (Exception e) {
             logger.error(String.valueOf(e));
             return null;
@@ -130,4 +150,19 @@ public class AlertController {
         return null;
 
     }
+
+    private List<Alert> saveAlertHelper(List<Alert> alerts, Aquarium aquarium) {
+        for (Alert alert : alerts) {
+            //pour chaque alerte à enregistrer on regarde si une alerte existe avec la concordance aquarium / TypeTest
+            Alert checkAlert = alertRepository.findByAquariumAndAndTypeTest(aquarium, alert.getTypeTest());
+            //si on a un résultat on regarde si le TypeTest est équivalent, si oui on set l'iD pour faire un save-update
+            if (checkAlert != null && checkAlert.getTypeTest().equals(alert.getTypeTest())) {
+                alert.setId(checkAlert.getId());
+            }
+            alert.setAquarium(aquarium);
+            alertRepository.save(alert);
+        }
+        return alertRepository.findAllByAquarium(aquarium);
+    }
+
 }

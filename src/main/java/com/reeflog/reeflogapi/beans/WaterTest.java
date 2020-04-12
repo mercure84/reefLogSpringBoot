@@ -25,6 +25,8 @@ public class WaterTest {
     private Float phosphates;
     private Float silicates;
 
+    public enum TypeTest {TEMPERATURE, SALINITY, ALCALINITY, PH, CALCIUM, MAGNESIUM, AMMONIAC, NITRATES, NITRITES, PHOSPHATES, SILICATES}
+
 
     @ManyToOne
     private Aquarium aquarium;

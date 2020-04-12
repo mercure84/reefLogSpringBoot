@@ -15,12 +15,12 @@ public class Alert {
     @Id
     @GeneratedValue
     private int id;
-    private TypeTest typeTest;
+    private WaterTest.TypeTest typeTest;
     private float targetValue;
-    private int dayInterval;
+    private int dayInterval = 7;
+    private boolean isActive = false;
     @ManyToOne
     private Aquarium aquarium;
 
-    public enum TypeTest {TEMPERATURE, SALINITY, ALCALINITY, PH, CALCIUM, MAGNESIUM, AMMONIAC, NITRATES, NITRITES, PHOSPHATES, SILICATES}
 
 }

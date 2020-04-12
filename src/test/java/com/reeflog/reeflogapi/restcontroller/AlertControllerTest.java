@@ -2,6 +2,7 @@ package com.reeflog.reeflogapi.restcontroller;
 
 import com.reeflog.reeflogapi.beans.Alert;
 import com.reeflog.reeflogapi.beans.Member;
+import com.reeflog.reeflogapi.beans.WaterTest;
 import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import com.reeflog.reeflogapi.beans.aquariums.ReefAquarium;
 import com.reeflog.reeflogapi.beans.helpers.AlertForm;
@@ -44,14 +45,14 @@ public class AlertControllerTest {
 
         List<Alert> alerts = new ArrayList<>();
         Alert alert = new Alert();
-        alert.setTypeTest(Alert.TypeTest.PH);
+        alert.setTypeTest(WaterTest.TypeTest.PH);
         AlertForm alertForm = new AlertForm();
         alertForm.setAlerts(alerts);
         Aquarium aquarium = new ReefAquarium();
         String token = "blablaToken";
         Member member = aquarium.getMember();
         Alert existingAlert = new Alert();
-        existingAlert.setTypeTest(Alert.TypeTest.PH);
+        existingAlert.setTypeTest(WaterTest.TypeTest.PH);
         when(aquariumRepository.findById(alertForm.getAquariumId())).thenReturn(aquarium);
         when(jwtTokenUtil.validateCustomTokenForMember(token, member)).thenReturn(true);
         alertController.addOneAlert(token, alertForm);
