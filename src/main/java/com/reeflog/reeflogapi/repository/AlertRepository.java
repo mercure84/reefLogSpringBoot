@@ -13,5 +13,7 @@ List<Alert> findAllByAquarium (Aquarium aquarium);
 
 Alert findByAquariumAndAndTypeTest(Aquarium aquarium, WaterTest.TypeTest typeTest);
 
+List<Alert> findAllByAquariumAndIsActiveTrue(Aquarium aquarium);
+
 
 }

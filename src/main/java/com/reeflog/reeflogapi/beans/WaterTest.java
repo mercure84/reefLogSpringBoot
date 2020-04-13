@@ -2,7 +2,6 @@ package com.reeflog.reeflogapi.beans;
 
 import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import lombok.Data;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -12,7 +11,7 @@ public class WaterTest {
     @Id
     @GeneratedValue
     private int id;
-    private Date date;
+    private Date date = new Date();
     private Float temperature;
     private Float salinity;
     private Float alcalinity;

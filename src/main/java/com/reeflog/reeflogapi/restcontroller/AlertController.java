@@ -9,13 +9,17 @@ import com.reeflog.reeflogapi.beans.helpers.AlertForm;
 import com.reeflog.reeflogapi.repository.AlertRepository;
 import com.reeflog.reeflogapi.repository.AquariumRepository;
 import com.reeflog.reeflogapi.repository.MemberRepository;
+import com.reeflog.reeflogapi.repository.WaterTestRepository;
 import com.reeflog.reeflogapi.security.JwtTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -28,6 +32,9 @@ public class AlertController {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    WaterTestRepository waterTestRepository;
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
@@ -150,6 +157,107 @@ public class AlertController {
         return null;
 
     }
+
+    //controller pour afficher les alertes actives qui doivent être montrées à l'utilisateur
+    @GetMapping(value = "api/showAlerts/{aquariumId}")
+    public List<Alert> showAlerts(@RequestHeader("Authorization") String token, @PathVariable int aquariumId) {
+
+        try {
+            Aquarium aquarium = aquariumRepository.findById(aquariumId);
+            Member member = aquarium.getMember();
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide) {
+                //on instancie une liste d'alerte vide qui sera remontée par le service
+                List<Alert> alertsToShow = new ArrayList<>();
+
+                //On récupère la liste des alertes actives
+                List<Alert> alerts = alertRepository.findAllByAquariumAndIsActiveTrue(aquarium);
+
+                //pour chaque alerte on récupère la date butoir (targetDate)
+                for (Alert alert : alerts) {
+                    LocalDate targetLocalDate = LocalDate.now().minusDays(alert.getDayInterval());
+                    Date targetDate = Date.from(targetLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                    //on cherche les tests qui sont postérieurs à cette date
+                    List<WaterTest> waterTests = waterTestRepository.findByAquariumAndDateAfter(aquarium, targetDate);
+                    //si je n'ai aucun test après la targetDate, je peux valider l'alerte comme positive et l'ajouter à ma liste alerToShow
+                    if(waterTests.size() == 0){
+
+                        alertsToShow.add(alert);
+                    }
+                    else {
+                    //sinon pour chaque test remonté, on regarde si on a une donné pour le paramètre de l'alerte
+                    for (WaterTest test : waterTests) {
+                        switch (alert.getTypeTest()) {
+                            case PH:
+                                if (test.getPh() == null) {
+                                    //si l'alerte suit le PH et que celui-ci est nul ==> on remonte l'alerte
+                                    alertsToShow.add(alert);
+                                }
+                                break;
+                            case CALCIUM:
+                                if (test.getCalcium() == null) {
+                                    alertsToShow.add(alert);
+                                }
+                                break;
+                            case ALCALINITY:
+                                if (test.getAlcalinity() == null) {
+                                    alertsToShow.add(alert);
+                                }
+                                break;
+                            case SALINITY:
+                                if (test.getSalinity() == null) {
+                                    alertsToShow.add(alert);
+                                }
+                                break;
+                            case SILICATES:
+                                if (test.getSilicates() == null) {
+                                    alertsToShow.add(alert);
+                                }
+                                break;
+                            case NITRATES:
+                                if (test.getNitrates() == null) {
+                                    alertsToShow.add(alert);
+                                }
+                                break;
+                            case NITRITES:
+                                if (test.getNitrites() == null) {
+                                    alertsToShow.add(alert);
+                                }
+                                break;
+                            case AMMONIAC:
+                                if (test.getAmmoniac() == null) {
+                                    alertsToShow.add(alert);
+                                }
+                                break;
+                            case MAGNESIUM:
+                                if (test.getMagnesium() == null) {
+                                    alertsToShow.add(alert);
+                                }
+                                break;
+                            case TEMPERATURE:
+                                if (test.getTemperature() == null) {
+                                    alertsToShow.add(alert);
+                                }
+                                break;
+                            case PHOSPHATES:
+                                if (test.getPhosphates() == null) {
+                                    alertsToShow.add(alert);
+                                }
+                                break;
+                             }
+                    }}
+                }
+                return alertsToShow;
+            }
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+            return null;
+        }
+        return null;
+
+
+    }
+
 
     private List<Alert> saveAlertHelper(List<Alert> alerts, Aquarium aquarium) {
         for (Alert alert : alerts) {
