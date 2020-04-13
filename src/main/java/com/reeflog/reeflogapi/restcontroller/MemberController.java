@@ -57,7 +57,7 @@ public class MemberController {
 
             try {
                 // envoi d'un mail à l'administrateur
-                String messageAdmin = newMember.getUserName().toUpperCase() + " s'est enregistré sur REEFLOG le " + newMember.getUserName().toUpperCase() + ",  son email : " + newMember.getEmail();
+                String messageAdmin = newMember.getUserName().toUpperCase() + " s'est enregistré sur REEFLOG le " + newMember.getSignupDate().toString() + ",  son email : " + newMember.getEmail();
                 String emailAdmin = "julien.marcesse@gmail.com";
                 emailService.sendMail(emailAdmin, newMember.getUserName().toUpperCase() + " vient de s'inscrire sur ReefLog !", messageAdmin);
 
@@ -111,13 +111,12 @@ public class MemberController {
     }
 
     @PostMapping(value = "/api/updateMember")
-    public Member updateMember(@RequestHeader("Authorization") String token, @RequestBody SignUpForm signUpForm) throws RuntimeException {
+    public Member updateMember(@RequestHeader("Authorization") String token, @RequestBody SignUpForm signUpForm) throws RuntimeException, MemberException {
         Member member = memberRepository.findById(signUpForm.getIdToUpdate());
         boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
         if (isTokenValide && signUpForm.checkPassWord()) {
             if (member.getMemberStatus() == Member.MemberStatus.BLOCKED) {
-                throw new RuntimeException("Ce membre ne peut être modifié, il a été verrouillé par un administrateur");
-
+                throw new MemberException("Ce membre ne peut être modifié, il a été verrouillé par un administrateur");
             } else {
                 member.setRole("USER");
                 member.setUserName(signUpForm.getUserName());
