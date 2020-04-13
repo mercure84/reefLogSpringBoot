@@ -1,9 +1,9 @@
 package com.reeflog.reeflogapi.restcontroller;
 
 import com.reeflog.reeflogapi.ReefLogApiApplication;
-import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.beans.WaterTest;
+import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import com.reeflog.reeflogapi.beans.helpers.WaterTestForm;
 import com.reeflog.reeflogapi.repository.AquariumRepository;
 import com.reeflog.reeflogapi.repository.MemberRepository;
@@ -38,11 +38,9 @@ public class WaterTestController {
         try {
             Aquarium aquarium = aquariumRepository.findById(waterTestForm.getAquariumId());
             Member member = aquarium.getMember();
-            // check token
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 WaterTest waterTest = waterTestForm.getWaterTest();
-                waterTest.setDate(new Date());
                 waterTest.setAquarium(aquarium);
                 waterTestRepository.save(waterTest);
                 logger.info("Un nouveau test d'eau a été ajouté pour l'aquarium n° " + aquarium.getId());
