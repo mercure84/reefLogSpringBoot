@@ -1,5 +1,6 @@
 package com.reeflog.reeflogapi.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import lombok.Data;
 
@@ -24,6 +25,7 @@ public class Equipment {
     private int quantity = 1;
 
     @ManyToOne
+    @JsonIgnore
     private Aquarium aquarium;
 
     public enum TypeOfEquipment {SKIMMER, STREAMPUMP, RETURNPUMP, LIGHT, DOSINGPUMP, AIRPUMP, CONTROLLER, FILTER, HEATING, OSMOLATOR, ULTRA_V, OTHER }

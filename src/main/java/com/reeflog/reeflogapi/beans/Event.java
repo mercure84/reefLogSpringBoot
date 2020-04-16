@@ -1,5 +1,6 @@
 package com.reeflog.reeflogapi.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import lombok.Data;
 
@@ -13,19 +14,16 @@ public class Event {
     @Id
     @GeneratedValue
     private int id;
-    private TypeEvent type;
+    private TypeEvent type = TypeEvent.OTHER;
 
     @ManyToOne
-    private Member member;
-
-    @ManyToOne
+    @JsonIgnore
     private Aquarium aquarium;
 
-    private Date date;
+    private Date date = new Date();
+    private String title;
     private String description;
 
-    public enum TypeEvent { EQUIPMENT, MAINTENANCE, ANIMAL, OTHER }
-
-
+    public enum TypeEvent { TREATEMENT, MAINTENANCE, ANIMAL, OTHER }
 
 }
