@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 public class AlertController {
@@ -160,7 +158,7 @@ public class AlertController {
 
     //controller pour afficher les alertes actives qui doivent être montrées à l'utilisateur
     @GetMapping(value = "api/showAlerts/{aquariumId}")
-    public List<Alert> showAlerts(@RequestHeader("Authorization") String token, @PathVariable int aquariumId) {
+    public Set<Alert> showAlerts(@RequestHeader("Authorization") String token, @PathVariable int aquariumId) {
 
         try {
             Aquarium aquarium = aquariumRepository.findById(aquariumId);
@@ -168,10 +166,10 @@ public class AlertController {
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 //on instancie une liste d'alerte vide qui sera remontée par le service
-                List<Alert> alertsToShow = new ArrayList<>();
+                Set<Alert> alertsToShow = new HashSet<>();
 
                 //On récupère la liste des alertes actives
-                List<Alert> alerts = alertRepository.findAllByAquariumAndIsActiveTrue(aquarium);
+                Set<Alert> alerts = alertRepository.findAllByAquariumAndIsActiveTrue(aquarium);
 
                 //pour chaque alerte on récupère la date butoir (targetDate)
                 for (Alert alert : alerts) {
@@ -180,7 +178,7 @@ public class AlertController {
                     //on cherche les tests qui sont postérieurs à cette date
                     List<WaterTest> waterTests = waterTestRepository.findByAquariumAndDateAfter(aquarium, targetDate);
                     //si je n'ai aucun test après la targetDate, je peux valider l'alerte comme positive et l'ajouter à ma liste alerToShow
-                    if(waterTests.size() == 0){
+                    if (waterTests.size() == 0) {
 
                         alertsToShow.add(alert);
                     }
@@ -190,7 +188,6 @@ public class AlertController {
                         switch (alert.getTypeTest()) {
                             case PH:
                                 if (test.getPh() == null) {
-                                    //si l'alerte suit le PH et que celui-ci est nul ==> on remonte l'alerte
                                     alertsToShow.add(alert);
                                 }
                                 break;
