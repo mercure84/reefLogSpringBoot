@@ -244,6 +244,8 @@ public class AlertController {
                              }
                     }}
                 }
+                logger.info("Envoie de  " + alertsToShow.size() + " alertes POSITIVIES de l'aquarium N° " + aquariumId);
+
                 return alertsToShow;
             }
         } catch (Exception e) {
