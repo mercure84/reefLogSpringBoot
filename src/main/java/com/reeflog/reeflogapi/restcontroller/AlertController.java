@@ -165,88 +165,91 @@ public class AlertController {
             Member member = aquarium.getMember();
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
-                //on instancie une liste d'alerte vide qui sera remontée par le service
-                Set<Alert> alertsToShow = new HashSet<>();
-
                 //On récupère la liste des alertes actives
-                Set<Alert> alerts = alertRepository.findAllByAquariumAndIsActiveTrue(aquarium);
-
-                //pour chaque alerte on récupère la date butoir (targetDate)
-                for (Alert alert : alerts) {
+                Set<Alert> activeAlerts = alertRepository.findAllByAquariumAndIsActiveTrue(aquarium);
+                //On instance une liste d'alerte qu'on va épurer si on trouve des tests
+                Set<Alert> alerts = new HashSet<>();
+                alerts.addAll(activeAlerts);
+                //pour chaque alerte active on interroge la BDD pour savoir s'il existe un test non null postérieur à la date butoir
+                for (Alert alert : activeAlerts) {
                     LocalDate targetLocalDate = LocalDate.now().minusDays(alert.getDayInterval());
                     Date targetDate = Date.from(targetLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                    //on cherche les tests qui sont postérieurs à cette date
-                    List<WaterTest> waterTests = waterTestRepository.findByAquariumAndDateAfter(aquarium, targetDate);
-                    //si je n'ai aucun test après la targetDate, je peux valider l'alerte comme positive et l'ajouter à ma liste alerToShow
-                    if (waterTests.size() == 0) {
 
-                        alertsToShow.add(alert);
+                    switch (alert.getTypeTest()) {
+                        case TEMPERATURE:
+                            List<WaterTest> temperatureTests = waterTestRepository.findByAquariumAndDateAfterAndTemperatureIsNotNull(aquarium, targetDate);
+                            if (temperatureTests.size() > 0 && alerts.contains(alert)) {
+                                alerts.remove(alert);
+                            }
+                            break;
+                        case CALCIUM:
+                            List<WaterTest> calciumTests = waterTestRepository.findByAquariumAndDateAfterAndCalciumIsNotNull(aquarium, targetDate);
+                            if (calciumTests.size() > 0 && alerts.contains(alert)) {
+                                alerts.remove(alert);
+                            }
+                            break;
+                        case ALCALINITY:
+                            List<WaterTest> khTests = waterTestRepository.findByAquariumAndDateAfterAndAlcalinityIsNotNull(aquarium, targetDate);
+                            if (khTests.size() > 0 && alerts.contains(alert)) {
+                                alerts.remove(alert);
+                            }
+                            break;
+                        case PH:
+                            List<WaterTest> phTests = waterTestRepository.findByAquariumAndDateAfterAndPhIsNotNull(aquarium, targetDate);
+                            if (phTests.size() > 0 && alerts.contains(alert)) {
+                                alerts.remove(alert);
+                            }
+                            break;
+                        case AMMONIAC:
+                            List<WaterTest> nh4Tests = waterTestRepository.findByAquariumAndDateAfterAndAmmoniacIsNotNull(aquarium, targetDate);
+                            if (nh4Tests.size() > 0 && alerts.contains(alert)) {
+                                alerts.remove(alert);
+                            }
+                            break;
+                        case MAGNESIUM:
+                            List<WaterTest> magnesiumTests = waterTestRepository.findByAquariumAndDateAfterAndMagnesiumIsNotNull(aquarium, targetDate);
+                            if (magnesiumTests.size() > 0 && alerts.contains(alert)) {
+                                alerts.remove(alert);
+                            }
+                            break;
+                        case SILICATES:
+                            List<WaterTest> silicatesTests = waterTestRepository.findByAquariumAndDateAfterAndSilicatesIsNotNull(aquarium, targetDate);
+                            if (silicatesTests.size() > 0 && alerts.contains(alert)) {
+                                alerts.remove(alert);
+                            }
+                            break;
+                        case PHOSPHATES:
+                            List<WaterTest> phosphatesTests = waterTestRepository.findByAquariumAndDateAfterAndPhosphatesIsNotNull(aquarium, targetDate);
+                            if (phosphatesTests.size() > 0 && alerts.contains(alert)) {
+                                alerts.remove(alert);
+                            }
+                            break;
+                        case SALINITY:
+                            List<WaterTest> salinityTests = waterTestRepository.findByAquariumAndDateAfterAndSalinityIsNotNull(aquarium, targetDate);
+                            if (salinityTests.size() > 0 && alerts.contains(alert)) {
+                                alerts.remove(alert);
+                            }
+                            break;
+                        case NITRATES:
+                            List<WaterTest> nitratesTests = waterTestRepository.findByAquariumAndDateAfterAndNitratesIsNotNull(aquarium, targetDate);
+                            if (nitratesTests.size() > 0 && alerts.contains(alert)) {
+                                alerts.remove(alert);
+                            }
+                            break;
+                        case NITRITES:
+                            List<WaterTest> nitritesTests = waterTestRepository.findByAquariumAndDateAfterAndNitritesIsNotNull(aquarium, targetDate);
+                            if (nitritesTests.size() > 0 && alerts.contains(alert)) {
+                                alerts.remove(alert);
+                            }
+                            break;
+
                     }
-                    else {
-                    //sinon pour chaque test remonté, on regarde si on a une donné pour le paramètre de l'alerte
-                    for (WaterTest test : waterTests) {
-                        switch (alert.getTypeTest()) {
-                            case PH:
-                                if (test.getPh() == null) {
-                                    alertsToShow.add(alert);
-                                }
-                                break;
-                            case CALCIUM:
-                                if (test.getCalcium() == null) {
-                                    alertsToShow.add(alert);
-                                }
-                                break;
-                            case ALCALINITY:
-                                if (test.getAlcalinity() == null) {
-                                    alertsToShow.add(alert);
-                                }
-                                break;
-                            case SALINITY:
-                                if (test.getSalinity() == null) {
-                                    alertsToShow.add(alert);
-                                }
-                                break;
-                            case SILICATES:
-                                if (test.getSilicates() == null) {
-                                    alertsToShow.add(alert);
-                                }
-                                break;
-                            case NITRATES:
-                                if (test.getNitrates() == null) {
-                                    alertsToShow.add(alert);
-                                }
-                                break;
-                            case NITRITES:
-                                if (test.getNitrites() == null) {
-                                    alertsToShow.add(alert);
-                                }
-                                break;
-                            case AMMONIAC:
-                                if (test.getAmmoniac() == null) {
-                                    alertsToShow.add(alert);
-                                }
-                                break;
-                            case MAGNESIUM:
-                                if (test.getMagnesium() == null) {
-                                    alertsToShow.add(alert);
-                                }
-                                break;
-                            case TEMPERATURE:
-                                if (test.getTemperature() == null) {
-                                    alertsToShow.add(alert);
-                                }
-                                break;
-                            case PHOSPHATES:
-                                if (test.getPhosphates() == null) {
-                                    alertsToShow.add(alert);
-                                }
-                                break;
-                             }
-                    }}
-                }
-                logger.info("Envoie de  " + alertsToShow.size() + " alertes POSITIVIES de l'aquarium N° " + aquariumId);
 
-                return alertsToShow;
+
+                }
+
+                logger.info("Envoie de  " + alerts.size() + " alertes POSITIVIES de l'aquarium N° " + aquariumId);
+                return alerts;
             }
         } catch (Exception e) {
             logger.error(String.valueOf(e));
