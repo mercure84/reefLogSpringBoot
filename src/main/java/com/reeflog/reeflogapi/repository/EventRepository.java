@@ -11,6 +11,6 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Integer> {
 
 Event findById(int eventId);
-List<Event> findByAquarium(Aquarium aquarium);
+List<Event> findByAquariumOrderByDateDesc(Aquarium aquarium);
 
 }

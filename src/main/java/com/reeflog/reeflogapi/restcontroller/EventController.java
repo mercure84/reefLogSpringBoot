@@ -1,7 +1,6 @@
 package com.reeflog.reeflogapi.restcontroller;
 
 import com.reeflog.reeflogapi.ReefLogApiApplication;
-import com.reeflog.reeflogapi.beans.Equipment;
 import com.reeflog.reeflogapi.beans.Event;
 import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
@@ -105,7 +104,7 @@ public class EventController {
             Member member = aquarium.getMember();
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
-                List<Event> events = eventRepository.findByAquarium(aquarium);
+                List<Event> events = eventRepository.findByAquariumOrderByDateDesc(aquarium);
                 for (Event event : events){
                     eventRepository.delete(event);
                 }
@@ -128,7 +127,7 @@ public class EventController {
             Member member = aquarium.getMember();
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
-                List<Event> events = eventRepository.findByAquarium(aquarium);
+                List<Event> events = eventRepository.findByAquariumOrderByDateDesc(aquarium);
                 logger.info("Liste d'équipements envoyés pour l'aquarium n° " + aquariumId);
                 return events ;
             }
