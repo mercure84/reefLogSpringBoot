@@ -14,6 +14,7 @@ import com.reeflog.reeflogapi.beans.helpers.SignUpForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -139,6 +140,9 @@ public class MemberController {
         }
     }
 
+    @Value("${server.url}")
+    private String serverUrl;
+
 
     @GetMapping(value = "/api/recoverPassword/{email}")
     public void sendMailForPasswordRecover(@PathVariable String email){
@@ -148,7 +152,7 @@ public class MemberController {
             passWordRecover.setMember(member);
             passWordRecover.setInitialDate(new Date());
             passWordRecover.setUrlToken();
-            String linkRecover = "https://www.centropyge-bicolor.fr:8443/api/recoverPassWordMail/"+ passWordRecover.getUrlToken();
+            String linkRecover = this.serverUrl + "/web/recoverPasswordMail/"+ passWordRecover.getUrlToken();
             String messageMember = "Cher " + member.getUserName().toUpperCase() + ",\n" + "Vous avez demandé la réinitialisation de votre mot de passe.\n" +
                     "Veuillez cliquer sur ce lien pour définir un nouveau mot de passe : \n \n " +
                     linkRecover + "\n \n" +
@@ -161,6 +165,5 @@ public class MemberController {
             logger.error(String.valueOf(e));
         }
     }
-
 
 }
