@@ -2,8 +2,10 @@ package com.reeflog.reeflogapi.restcontroller;
 
 import com.reeflog.reeflogapi.ReefLogApiApplication;
 import com.reeflog.reeflogapi.beans.Member;
+import com.reeflog.reeflogapi.beans.helpers.PasswordRecover;
 import com.reeflog.reeflogapi.exceptions.MemberException;
 import com.reeflog.reeflogapi.repository.MemberRepository;
+import com.reeflog.reeflogapi.repository.PasswordRecoverRepository;
 import com.reeflog.reeflogapi.security.JwtTokenUtil;
 import com.reeflog.reeflogapi.utils.BeanValidator;
 import com.reeflog.reeflogapi.utils.EmailService;
@@ -13,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RestController
 public class MemberController {
@@ -30,6 +34,9 @@ public class MemberController {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private PasswordRecoverRepository passwordRecoverRepository;
 
     @PostMapping(value = "/api/addNewMember")
     public Member addNewMember(@RequestBody SignUpForm signUpForm) throws Exception {
@@ -130,6 +137,30 @@ public class MemberController {
         } else {
             throw new RuntimeException("Problème de token ou de mot de passe qui ne correspondent pas");
         }
-
     }
+
+
+    @GetMapping(value = "/api/recoverPassword/{email}")
+    public void sendMailForPasswordRecover(@PathVariable String email){
+        try {
+            Member member = memberRepository.findByEmail(email);
+            PasswordRecover passWordRecover = new PasswordRecover();
+            passWordRecover.setMember(member);
+            passWordRecover.setInitialDate(new Date());
+            passWordRecover.setUrlToken();
+            String linkRecover = "https://www.centropyge-bicolor.fr:8443/api/recoverPassWordMail/"+ passWordRecover.getUrlToken();
+            String messageMember = "Cher " + member.getUserName().toUpperCase() + ",\n" + "Vous avez demandé la réinitialisation de votre mot de passe.\n" +
+                    "Veuillez cliquer sur ce lien pour définir un nouveau mot de passe : \n \n " +
+                    linkRecover + "\n \n" +
+                    "L'équipe ReefLog";
+            emailService.sendMail(member.getEmail(), "Réinitialisation de votre mot de passe " + member.getUserName().toUpperCase() + " SUR REEFLOG !", messageMember);
+            passwordRecoverRepository.save(passWordRecover);
+            logger.info("Un lien de mot de pass recovering a été envoyé à l'adresse " + email);
+
+        } catch (Exception e){
+            logger.error(String.valueOf(e));
+        }
+    }
+
+
 }
