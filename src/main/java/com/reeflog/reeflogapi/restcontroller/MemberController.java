@@ -152,7 +152,7 @@ public class MemberController {
             passWordRecover.setMember(member);
             passWordRecover.setInitialDate(new Date());
             passWordRecover.setUrlToken();
-            String linkRecover = this.serverUrl + "/web/recoverPasswordMail/"+ passWordRecover.getUrlToken();
+            String linkRecover = this.serverUrl + "/web/recoverPasswordMail?token="+ passWordRecover.getUrlToken();
             String messageMember = "Cher " + member.getUserName().toUpperCase() + ",\n" + "Vous avez demandé la réinitialisation de votre mot de passe.\n" +
                     "Veuillez cliquer sur ce lien pour définir un nouveau mot de passe : \n \n " +
                     linkRecover + "\n \n" +
