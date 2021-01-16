@@ -22,3 +22,11 @@ Si vous lancez toutes les requêtes (environ 50 tests au 08/04/2019), vous aurez
 Bonne utilisation !
 
 Julien M.
+
+# GETTINGS STARTED
+
+Process de configuration du server VPS (Ubuntu 20.04 LTS)
+1) `sudo apt-get update`
+2) installer postgres : `sudo apt install postgresql` 
+3) configurer postgresql : sudo nano /etc/postgresql/12/main/postgresql.conf 
+4) changer le mot de passe 
