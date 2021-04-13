@@ -128,7 +128,7 @@ public class EventController {
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 List<Event> events = eventRepository.findByAquariumOrderByDateDesc(aquarium);
-                logger.info("Liste d'équipements envoyés pour l'aquarium n° " + aquariumId);
+                logger.info("Liste d'évènements envoyés pour l'aquarium n° " + aquariumId);
                 return events ;
             }
         } catch (Exception e) {
