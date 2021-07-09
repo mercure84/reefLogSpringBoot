@@ -1,8 +1,16 @@
 package com.reeflog.reeflogapi.restcontroller;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.reeflog.reeflogapi.ReefLogApiApplication;
 import com.reeflog.reeflogapi.beans.Member;
+import com.reeflog.reeflogapi.beans.helpers.GoogleForm;
 import com.reeflog.reeflogapi.beans.helpers.PasswordRecover;
+import com.reeflog.reeflogapi.beans.helpers.SignUpForm;
 import com.reeflog.reeflogapi.exceptions.MemberException;
 import com.reeflog.reeflogapi.repository.MemberRepository;
 import com.reeflog.reeflogapi.repository.PasswordRecoverRepository;
@@ -10,13 +18,15 @@ import com.reeflog.reeflogapi.security.JwtTokenUtil;
 import com.reeflog.reeflogapi.utils.BeanValidator;
 import com.reeflog.reeflogapi.utils.EmailService;
 import com.reeflog.reeflogapi.utils.EncryptedPasswordUtils;
-import com.reeflog.reeflogapi.beans.helpers.SignUpForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
 import java.util.Date;
 
 @RestController
@@ -38,6 +48,9 @@ public class MemberController {
 
     @Autowired
     private PasswordRecoverRepository passwordRecoverRepository;
+
+    @Value("${webClientIdGoogleOAuth2}")
+    String googleWebClientId;
 
     @PostMapping(value = "/api/addNewMember")
     public Member addNewMember(@RequestBody SignUpForm signUpForm) throws Exception {
@@ -161,8 +174,42 @@ public class MemberController {
             passwordRecoverRepository.save(passWordRecover);
             logger.info("Un lien de mot de pass recovering a été envoyé à l'adresse " + email);
 
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error(String.valueOf(e));
+        }
+    }
+
+
+    @PostMapping(value = "/api/oauth2/googleLogin")
+    public void googleMember(@RequestBody GoogleForm googleForm) throws GeneralSecurityException, IOException {
+        try {
+            System.out.println("Asking for Google OAuth2 : " + googleForm.getEmail() + ", id = " + googleForm.getTokenId());
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+        }
+        final HttpTransport transport = new NetHttpTransport();
+        final JsonFactory jsonFactory = new GsonFactory();
+
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                .setAudience(Collections.singletonList(googleWebClientId))
+                .build();
+        GoogleIdToken idToken = verifier.verify(googleForm.getTokenId());
+        if (idToken != null) {
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            // Print user identifier
+            String userId = payload.getSubject();
+            System.out.println("User ID: " + userId);
+            // Get profile information from payload
+            String email = payload.getEmail();
+            boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
+            String name = (String) payload.get("name");
+            String pictureUrl = (String) payload.get("picture");
+            String locale = (String) payload.get("locale");
+            String familyName = (String) payload.get("family_name");
+            String givenName = (String) payload.get("given_name");
+            System.out.println("Notre client = " + email + " " + familyName + " " + givenName + " " + name + " email vérifié ? " + emailVerified);
+        } else {
+            System.out.println("Invalid ID token.");
         }
     }
 
