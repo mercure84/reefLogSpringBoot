@@ -14,6 +14,7 @@ import com.reeflog.reeflogapi.beans.helpers.SignUpForm;
 import com.reeflog.reeflogapi.exceptions.MemberException;
 import com.reeflog.reeflogapi.repository.MemberRepository;
 import com.reeflog.reeflogapi.repository.PasswordRecoverRepository;
+import com.reeflog.reeflogapi.security.JwtAuthenticationController;
 import com.reeflog.reeflogapi.security.JwtTokenUtil;
 import com.reeflog.reeflogapi.utils.BeanValidator;
 import com.reeflog.reeflogapi.utils.EmailService;
@@ -22,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -48,6 +50,9 @@ public class MemberController {
 
     @Autowired
     private PasswordRecoverRepository passwordRecoverRepository;
+
+    @Autowired
+    private JwtAuthenticationController jwtAuthenticationController;
 
     @Value("${webClientIdGoogleOAuth2}")
     String googleWebClientId;
@@ -179,9 +184,9 @@ public class MemberController {
         }
     }
 
-
+    // service d'authentification par google signin
     @PostMapping(value = "/api/oauth2/googleLogin")
-    public void googleMember(@RequestBody GoogleForm googleForm) throws GeneralSecurityException, IOException {
+    public GoogleForm googleMember(@RequestBody GoogleForm googleForm) throws GeneralSecurityException, IOException {
         try {
             System.out.println("Asking for Google OAuth2 : " + googleForm.getEmail() + ", id = " + googleForm.getTokenId());
         } catch (Exception e) {
@@ -198,18 +203,21 @@ public class MemberController {
             GoogleIdToken.Payload payload = idToken.getPayload();
             // Print user identifier
             String userId = payload.getSubject();
-            System.out.println("User ID: " + userId);
+            System.out.println("User Google ID: " + userId);
             // Get profile information from payload
             String email = payload.getEmail();
             boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
-            String name = (String) payload.get("name");
-            String pictureUrl = (String) payload.get("picture");
-            String locale = (String) payload.get("locale");
-            String familyName = (String) payload.get("family_name");
-            String givenName = (String) payload.get("given_name");
-            System.out.println("Notre client = " + email + " " + familyName + " " + givenName + " " + name + " email vérifié ? " + emailVerified);
+            System.out.println(email + " " + " vérifié ? " + emailVerified);
+            Member member = memberRepository.findByEmail(email);
+            if (member != null) {
+                googleForm.setMember(member);
+                googleForm.setJwtToken(jwtAuthenticationController.createTokenForOAuth2(email));
+                return googleForm;
+            }
+            return null;
         } else {
             System.out.println("Invalid ID token.");
+            return null;
         }
     }
 
