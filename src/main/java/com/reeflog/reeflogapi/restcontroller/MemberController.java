@@ -30,6 +30,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.Date;
+import java.util.UUID;
+
+import static com.reeflog.reeflogapi.utils.EncryptedPasswordUtils.encryptePassword;
 
 @RestController
 public class MemberController {
@@ -76,7 +79,7 @@ public class MemberController {
         } else {
             newMember.setUserName(signUpForm.getUserName());
             newMember.setEmail(signUpForm.getEmail());
-            String encodedPassword = EncryptedPasswordUtils.encryptePassword(signUpForm.getPassword());
+            String encodedPassword = encryptePassword(signUpForm.getPassword());
             newMember.setPassword(encodedPassword);
             memberRepository.save(newMember);
             logger.info("Un nouveau membre a été ajouté : " + newMember);
@@ -147,7 +150,7 @@ public class MemberController {
                 member.setRole("USER");
                 member.setUserName(signUpForm.getUserName());
                 member.setEmail(signUpForm.getEmail());
-                String encodedPassword = EncryptedPasswordUtils.encryptePassword(signUpForm.getPassword());
+                String encodedPassword = encryptePassword(signUpForm.getPassword());
                 member.setPassword(encodedPassword);
                 memberRepository.save(member);
                 logger.info("Le member " + member + " a été mis à jour ");
@@ -206,15 +209,28 @@ public class MemberController {
             System.out.println("User Google ID: " + userId);
             // Get profile information from payload
             String email = payload.getEmail();
+            String givenName = (String) payload.get("given_name");
+
             boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
             System.out.println(email + " " + " vérifié ? " + emailVerified);
             Member member = memberRepository.findByEmail(email);
             if (member != null) {
                 googleForm.setMember(member);
-                googleForm.setJwtToken(jwtAuthenticationController.createTokenForOAuth2(email));
-                return googleForm;
+            } else {
+                // si pas d'email dans la base des membres ==> instanciation d'un nouveau membre
+                Member newGoogleMember = new Member();
+                newGoogleMember.setEmail(email);
+                UUID uuid = UUID.randomUUID();
+                String randomUUIDString = uuid.toString();
+                newGoogleMember.setPassword(encryptePassword(randomUUIDString.substring(3, 12)));
+                newGoogleMember.setUserName(givenName);
+                newGoogleMember.setSignupDate(new Date());
+                memberRepository.save(newGoogleMember);
+                logger.info("Création d'un nouveau membre via GoogleSignin : " + newGoogleMember);
+                googleForm.setMember(newGoogleMember);
             }
-            return null;
+            googleForm.setJwtToken(jwtAuthenticationController.createTokenForOAuth2(email));
+            return googleForm;
         } else {
             System.out.println("Invalid ID token.");
             return null;
