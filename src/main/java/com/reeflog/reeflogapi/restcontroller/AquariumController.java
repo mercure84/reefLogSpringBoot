@@ -76,7 +76,7 @@ public class AquariumController {
             boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
             if (isTokenValide) {
                 List<Aquarium> listAquariums = aquariumRepository.findAquariumsByMember(member);
-                logger.info("Envoi de la liste des aquariums : pour le membre " + memberId);
+                logger.info("Envoi de la liste des aquariums : pour le membre " + memberId + " : " + listAquariums.size() + " aquarium(s) trouvés !");
                 return listAquariums;
             }
         } catch (Exception e) {
