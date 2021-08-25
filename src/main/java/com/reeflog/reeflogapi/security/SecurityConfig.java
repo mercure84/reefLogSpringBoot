@@ -83,7 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         //autorisation sur les controllers restful
         http.authorizeRequests().antMatchers("/api/login", "/api/oauth2/googleLogin" , "/api/checkToken", "/api/addNewMember", "/", "/api/recoverPassword/*", "/web/recoverPasswordMail*", "/web/changedPassword",
-                "/api/getAnimalSpecies").permitAll();
+                "/api/getAnimalSpecies", "/api/getWaterTestsForGraph/*/*").permitAll();
 
         http.authorizeRequests().anyRequest().hasAnyAuthority("ADMIN", "USER");
 

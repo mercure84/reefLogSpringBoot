@@ -4,7 +4,9 @@ import com.reeflog.reeflogapi.ReefLogApiApplication;
 import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.beans.WaterTest;
 import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
+import com.reeflog.reeflogapi.beans.helpers.Measure;
 import com.reeflog.reeflogapi.beans.helpers.WaterTestForm;
+import com.reeflog.reeflogapi.beans.helpers.WaterTestGraph;
 import com.reeflog.reeflogapi.repository.AquariumRepository;
 import com.reeflog.reeflogapi.repository.MemberRepository;
 import com.reeflog.reeflogapi.repository.WaterTestRepository;
@@ -14,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -139,6 +141,114 @@ public class WaterTestController {
             return null;
         }
         return null;
+    }
+
+    @GetMapping(value = "/api/getWaterTestsForGraph/{aquariumId}/{typeTest}")
+    public WaterTestGraph getWaterTestsForGraph(@PathVariable int aquariumId, @PathVariable WaterTest.TypeTest typeTest) {
+
+        try {
+            Aquarium aquarium = aquariumRepository.findById(aquariumId);
+            List<WaterTest> waterTests = waterTestRepository.findByAquariumOrderByDateDesc(aquarium);
+            WaterTestGraph graph = new WaterTestGraph();
+            graph.setTypeTest(typeTest);
+            List<Measure> measures = new ArrayList<>();
+
+            for (WaterTest waterTest : waterTests
+            ) {
+                switch (typeTest) {
+                    case PH:
+                        if (waterTest.getPh() != null) {
+                            measures.add((new Measure(waterTest.getDate(), waterTest.getPh())));
+                        }
+                        break;
+
+                    case CALCIUM:
+                        if (waterTest.getCalcium() != null) {
+                            measures.add((new Measure(waterTest.getDate(), waterTest.getCalcium())));
+
+                        }
+                        break;
+
+                    case AMMONIAC:
+                        if (waterTest.getAmmoniac() != null) {
+                            measures.add((new Measure(waterTest.getDate(), waterTest.getAmmoniac())));
+
+                        }
+                        break;
+
+                    case NITRATES:
+                        if (waterTest.getNitrates() != null) {
+                            measures.add((new Measure(waterTest.getDate(), waterTest.getNitrates())));
+
+
+                        }
+                        break;
+
+                    case NITRITES:
+                        if (waterTest.getNitrites() != null) {
+                            measures.add((new Measure(waterTest.getDate(), waterTest.getNitrites())));
+
+
+                        }
+                        break;
+
+                    case SALINITY:
+                        if (waterTest.getSalinity() != null) {
+                            measures.add((new Measure(waterTest.getDate(), waterTest.getSalinity())));
+
+
+                        }
+                        break;
+
+                    case MAGNESIUM:
+                        if (waterTest.getMagnesium() != null) {
+                            measures.add((new Measure(waterTest.getDate(), waterTest.getMagnesium())));
+
+
+                        }
+                        break;
+
+                    case SILICATES:
+                        if (waterTest.getSilicates() != null) {
+                            measures.add((new Measure(waterTest.getDate(), waterTest.getSilicates())));
+
+
+                        }
+                        break;
+
+                    case ALCALINITY:
+                        if (waterTest.getAlcalinity() != null) {
+                            measures.add((new Measure(waterTest.getDate(), waterTest.getAlcalinity())));
+                        }
+                        break;
+
+                    case PHOSPHATES:
+                        if (waterTest.getPhosphates() != null) {
+                            measures.add((new Measure(waterTest.getDate(), waterTest.getPhosphates())));
+                        }
+                        break;
+
+                    case TEMPERATURE:
+                        if (waterTest.getTemperature() != null) {
+                            measures.add((new Measure(waterTest.getDate(), waterTest.getTemperature())));
+                        }
+                        break;
+
+                    default:
+                        continue;
+                }
+            }
+
+
+            graph.setMeasures(measures);
+            return graph;
+
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+        }
+        return null;
+
+
     }
 
 }
