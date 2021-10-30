@@ -241,6 +241,7 @@ public class WaterTestController {
 
 
             graph.setMeasures(measures);
+            logger.info("Envoi de " + graph.getMeasures().size() + " mesure(s) pour  l'aquarium n° " + aquariumId + " pour le typeTest : " + typeTest );
             return graph;
 
         } catch (Exception e) {
