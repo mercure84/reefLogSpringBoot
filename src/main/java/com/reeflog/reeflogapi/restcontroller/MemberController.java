@@ -11,6 +11,7 @@ import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.beans.helpers.GoogleForm;
 import com.reeflog.reeflogapi.beans.helpers.PasswordRecover;
 import com.reeflog.reeflogapi.beans.helpers.SignUpForm;
+import com.reeflog.reeflogapi.beans.helpers.ThemeMemberForm;
 import com.reeflog.reeflogapi.exceptions.MemberException;
 import com.reeflog.reeflogapi.repository.MemberRepository;
 import com.reeflog.reeflogapi.repository.PasswordRecoverRepository;
@@ -135,9 +136,22 @@ public class MemberController {
         } else {
             return null;
         }
-
-
     }
+
+    @PostMapping(value = "/api/setMemberTheme")
+    public Member setMemberTheme(@RequestHeader("Authorization") String token, @RequestBody ThemeMemberForm themeMemberForm) {
+        Member member = memberRepository.findByEmail(themeMemberForm.getEmail());
+        boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+        if (isTokenValide) {
+            member.setThemeColor(themeMemberForm.getThemeNumber());
+            memberRepository.save(member);
+            logger.info("Le thème couleur du membre " + member.getEmail() + " a été mis à jour : " + member.getThemeColor() );
+            return member;
+        } else {
+            return null;
+        }
+    }
+
 
     @PostMapping(value = "/api/updateMember")
     public Member updateMember(@RequestHeader("Authorization") String token, @RequestBody SignUpForm signUpForm) throws RuntimeException, MemberException {

@@ -1,6 +1,5 @@
 package com.reeflog.reeflogapi.beans.helpers;
 
-import com.reeflog.reeflogapi.beans.WaterTest;
 import lombok.Data;
 
 import java.util.Date;
