@@ -3,11 +3,10 @@ package com.reeflog.reeflogapi.restcontroller;
 import com.reeflog.reeflogapi.ReefLogApiApplication;
 import com.reeflog.reeflogapi.beans.Member;
 import com.reeflog.reeflogapi.beans.animals.Animal;
-
 import com.reeflog.reeflogapi.beans.animals.Fish;
 import com.reeflog.reeflogapi.beans.aquariums.Aquarium;
 import com.reeflog.reeflogapi.beans.helpers.AnimalForm;
-
+import com.reeflog.reeflogapi.beans.helpers.CountingForm;
 import com.reeflog.reeflogapi.repository.AnimalRepository;
 import com.reeflog.reeflogapi.repository.AquariumRepository;
 import com.reeflog.reeflogapi.repository.MemberRepository;
@@ -18,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class AnimalController {
@@ -50,7 +51,7 @@ public class AnimalController {
             if (isTokenValide) {
                 fish.setAquarium(aquarium);
                 animalRepository.save(fish);
-                logger.info("Un nouveau pensionnaire a été ajouté : " + fish.toString());
+                logger.info("Un nouveau pensionnaire a été ajouté : " + fish);
                 return fish;
             }
         } catch (Exception e) {
@@ -152,11 +153,11 @@ public class AnimalController {
                 List<Animal> animals = animalRepository.findAnimalsByAquariumOrderByIncomingDateDesc(aquarium);
                 List<Fish> fishes = new ArrayList<>();
                 animals.forEach(animal -> {
-                    if (animal instanceof Fish){
+                    if (animal instanceof Fish) {
                         fishes.add((Fish) animal);
                     }
                 });
-                logger.info("Fishes envoyés pour l'aquarium n°" + aquariumId + ",  ==> ", fishes);
+                logger.info("Fishes envoyés pour l'aquarium n°" + aquariumId + ",  ==> " + fishes);
                 return fishes;
             }
         } catch (Exception e) {
@@ -183,4 +184,30 @@ public class AnimalController {
         }
         return null;
     }
+
+    @PostMapping(value = "/api/countFishes")
+    public CountingForm countFishes(@RequestHeader("Authorization") String token, @RequestBody CountingForm countingForm) {
+        try {
+            Aquarium aquarium = aquariumRepository.findById(countingForm.getAquariumId());
+            Member member = aquarium.getMember();
+            boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+            if (isTokenValide) {
+                countingForm.getFishIds().forEach(id -> {
+                    Optional<Animal> optionalAnimal = animalRepository.findById(id);
+                    optionalAnimal.ifPresent(animal -> {
+                        animal.setLastPresenceDate(new Date());
+                        animalRepository.save(animal);
+                    });
+                });
+
+            }
+            System.out.println("Fish count ===> " + countingForm);
+            return countingForm;
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+            return null;
+        }
+    }
+
+
 }

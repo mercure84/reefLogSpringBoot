@@ -19,9 +19,9 @@ public abstract class Animal {
     private int id;
     private String name ;
     private Date incomingDate = new Date();
-    private Date exitDate = null ;
-    private Date birthDate = null;
-    private Date deathDate = null;
+    private Date exitDate;
+    private Date birthDate;
+    private Date deathDate ;
     private String notes = null ;
     private Size size = Size.M ;
     private String origin = null;
@@ -30,6 +30,8 @@ public abstract class Animal {
     private enum Sex {MALE, FEMALE, UNDEFINED}
 
     private int quantity = 1;
+
+    private Date lastPresenceDate = null;
 
     @ManyToOne
     @JsonIgnore
