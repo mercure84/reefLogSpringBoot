@@ -19,6 +19,7 @@ public class Member {
     private String firstName;
     private String userName;
     private String email;
+    private int themeColor;
 
     @JsonIgnore
     private String password;

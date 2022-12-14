@@ -21,7 +21,6 @@ public class JwtAuthenticationController {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationController.class);
 
-
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -71,5 +70,12 @@ public class JwtAuthenticationController {
         } catch (BadCredentialsException e) {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
+    }
+    // méthode qui génère un jeton d'utilisateur dans le cas où l'utilisateur se connecte avec google
+    public String createTokenForOAuth2(String userName){
+        final UserDetails userDetails = userDetailsService
+                .loadUserByUsername(userName);
+        final String token = jwtTokenUtil.generateToken(userDetails);
+        return token;
     }
 }

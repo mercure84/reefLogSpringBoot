@@ -1,23 +1,39 @@
 package com.reeflog.reeflogapi.restcontroller;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.reeflog.reeflogapi.ReefLogApiApplication;
 import com.reeflog.reeflogapi.beans.Member;
+import com.reeflog.reeflogapi.beans.helpers.GoogleForm;
 import com.reeflog.reeflogapi.beans.helpers.PasswordRecover;
+import com.reeflog.reeflogapi.beans.helpers.SignUpForm;
+import com.reeflog.reeflogapi.beans.helpers.ThemeMemberForm;
 import com.reeflog.reeflogapi.exceptions.MemberException;
 import com.reeflog.reeflogapi.repository.MemberRepository;
 import com.reeflog.reeflogapi.repository.PasswordRecoverRepository;
+import com.reeflog.reeflogapi.security.JwtAuthenticationController;
 import com.reeflog.reeflogapi.security.JwtTokenUtil;
 import com.reeflog.reeflogapi.utils.BeanValidator;
 import com.reeflog.reeflogapi.utils.EmailService;
 import com.reeflog.reeflogapi.utils.EncryptedPasswordUtils;
-import com.reeflog.reeflogapi.beans.helpers.SignUpForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
 import java.util.Date;
+import java.util.UUID;
+
+import static com.reeflog.reeflogapi.utils.EncryptedPasswordUtils.encryptePassword;
 
 @RestController
 public class MemberController {
@@ -39,6 +55,12 @@ public class MemberController {
     @Autowired
     private PasswordRecoverRepository passwordRecoverRepository;
 
+    @Autowired
+    private JwtAuthenticationController jwtAuthenticationController;
+
+    @Value("${webClientIdGoogleOAuth2}")
+    String googleWebClientId;
+
     @PostMapping(value = "/api/addNewMember")
     public Member addNewMember(@RequestBody SignUpForm signUpForm) throws Exception {
 
@@ -54,11 +76,11 @@ public class MemberController {
         Member newMember = new Member();
 
         if (memberByEmail != null || memberByUsername != null) {
-            throw new MemberException("Utilisateur déjà enregistré ! changer d'email ou de username");
+            throw new MemberException("Cet utilisateur est déjà enregistré : changer d'E-mail et / ou de Pseudo ");
         } else {
             newMember.setUserName(signUpForm.getUserName());
             newMember.setEmail(signUpForm.getEmail());
-            String encodedPassword = EncryptedPasswordUtils.encryptePassword(signUpForm.getPassword());
+            String encodedPassword = encryptePassword(signUpForm.getPassword());
             newMember.setPassword(encodedPassword);
             memberRepository.save(newMember);
             logger.info("Un nouveau membre a été ajouté : " + newMember);
@@ -114,9 +136,22 @@ public class MemberController {
         } else {
             return null;
         }
-
-
     }
+
+    @PostMapping(value = "/api/setMemberTheme")
+    public Member setMemberTheme(@RequestHeader("Authorization") String token, @RequestBody ThemeMemberForm themeMemberForm) {
+        Member member = memberRepository.findByEmail(themeMemberForm.getEmail());
+        boolean isTokenValide = jwtTokenUtil.validateCustomTokenForMember(token, member);
+        if (isTokenValide) {
+            member.setThemeColor(themeMemberForm.getThemeNumber());
+            memberRepository.save(member);
+            logger.info("Le thème couleur du membre " + member.getEmail() + " a été mis à jour : " + member.getThemeColor() );
+            return member;
+        } else {
+            return null;
+        }
+    }
+
 
     @PostMapping(value = "/api/updateMember")
     public Member updateMember(@RequestHeader("Authorization") String token, @RequestBody SignUpForm signUpForm) throws RuntimeException, MemberException {
@@ -129,7 +164,7 @@ public class MemberController {
                 member.setRole("USER");
                 member.setUserName(signUpForm.getUserName());
                 member.setEmail(signUpForm.getEmail());
-                String encodedPassword = EncryptedPasswordUtils.encryptePassword(signUpForm.getPassword());
+                String encodedPassword = encryptePassword(signUpForm.getPassword());
                 member.setPassword(encodedPassword);
                 memberRepository.save(member);
                 logger.info("Le member " + member + " a été mis à jour ");
@@ -161,8 +196,58 @@ public class MemberController {
             passwordRecoverRepository.save(passWordRecover);
             logger.info("Un lien de mot de pass recovering a été envoyé à l'adresse " + email);
 
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error(String.valueOf(e));
+        }
+    }
+
+    // service d'authentification par google signin
+    @PostMapping(value = "/api/oauth2/googleLogin")
+    public GoogleForm googleMember(@RequestBody GoogleForm googleForm) throws GeneralSecurityException, IOException {
+        try {
+            System.out.println("Asking for Google OAuth2 : " + googleForm.getEmail() + ", id = " + googleForm.getTokenId());
+        } catch (Exception e) {
+            logger.error(String.valueOf(e));
+        }
+        final HttpTransport transport = new NetHttpTransport();
+        final JsonFactory jsonFactory = new GsonFactory();
+
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                .setAudience(Collections.singletonList(googleWebClientId))
+                .build();
+        GoogleIdToken idToken = verifier.verify(googleForm.getTokenId());
+        if (idToken != null) {
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            // Print user identifier
+            String userId = payload.getSubject();
+            System.out.println("User Google ID: " + userId);
+            // Get profile information from payload
+            String email = payload.getEmail();
+            String givenName = (String) payload.get("given_name");
+
+            boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
+            System.out.println(email + " " + " vérifié ? " + emailVerified);
+            Member member = memberRepository.findByEmail(email);
+            if (member != null) {
+                googleForm.setMember(member);
+            } else {
+                // si pas d'email dans la base des membres ==> instanciation d'un nouveau membre
+                Member newGoogleMember = new Member();
+                newGoogleMember.setEmail(email);
+                UUID uuid = UUID.randomUUID();
+                String randomUUIDString = uuid.toString();
+                newGoogleMember.setPassword(encryptePassword(randomUUIDString.substring(3, 12)));
+                newGoogleMember.setUserName(givenName);
+                newGoogleMember.setSignupDate(new Date());
+                memberRepository.save(newGoogleMember);
+                logger.info("Création d'un nouveau membre via GoogleSignin : " + newGoogleMember);
+                googleForm.setMember(newGoogleMember);
+            }
+            googleForm.setJwtToken(jwtAuthenticationController.createTokenForOAuth2(email));
+            return googleForm;
+        } else {
+            System.out.println("Invalid ID token.");
+            return null;
         }
     }
 
